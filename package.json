@@ -7,7 +7,7 @@
   "license": "ISC",
   "bin": "server.js",
   "dependencies": {
-    "@threefoldjimber/digitaltwin-backend": "^1.0.2",
+    "@threefoldjimber/digitaltwin-backend": "^1.0.4",
     "@threefoldjimber/threefold_login": "^1.4.0",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",

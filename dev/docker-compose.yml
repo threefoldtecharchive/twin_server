@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  jensmeire-digitaltwin:
+    container_name: jensmeire.chat
+    build:
+      context: ../
+      dockerfile: ./dev/Dockerfile
+    restart: always
+    environment:
+      - USER_ID=jensmeire
+      - ENVIRONMENT=development
+#      - NODE_ENV=production
+#      - SECRET=ecc000ad-635f-4afb-9723-19448ca01e62
+#      - THREEBOT_PHRASE="system sunset never robot news immune deputy away release mandate poverty elite wall vendor beyond wisdom offer gap great suspect flag narrow enjoy around"
+    volumes:
+      - /appdata:/appdata
+      - ~/.publisher:/root/.publisher
+      - ../publisher:/publisher
+      # - ./dev/logs:/var/log/
+      # - ./dev/logs:/var/log
+
+    networks:
+      - chatnet
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+
+#  alice-digitaltwin:
+#    container_name: alice-chat
+#    build:
+#      context: ../
+#      dockerfile: ./dev/Dockerfile
+#    restart: always
+#    environment:
+#      - USER_ID=alice
+#      - ENVIRONMENT=development
+#    volumes:
+#      - ../frontend:/frontend
+#      - ../backend:/backend
+#      - ./appdata1:/appdata
+#      # - ./dev/logs:/var/log/
+#      # - ./dev/logs:/var/log
+#
+#    networks:
+#      - chatnet
+#    sysctls:
+#      - net.ipv6.conf.all.disable_ipv6=0
+#    cap_add:
+#      - NET_ADMIN
+#    devices:
+#      - /dev/net/tun
+
+networks:
+  chatnet:
+    external: true

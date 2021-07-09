@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <title>Threefold Publisher</title>
+</head>
+
+<style>
+    * {
+        font-family: "Roboto", sans-serif;
+    }
+    
+    ul {
+        list-style: none;
+        margin: 10px 0;
+    }
+    
+    li {
+        text-transform: capitalize;
+        margin-bottom: 5px;
+    }
+</style>
+
+<body>
+   
+    {{#domains}} {{#websites.length}}
+     <h2>ThreeFold's Related projects </h2>
+    <ul>
+        {{#websites}}
+        <li>
+            <a href="//{{ url }}"> {{ name }}</a>
+        </li>
+        {{/websites}}
+    </ul>
+    {{/websites.length}}
+    
+     <h2>ThreeFold's Knowledge Base</h2>
+    <ul>
+        {{#wikis}}
+        <li>
+            <a href="//{{ url }}"> {{ name }}</a>
+        </li>
+        {{/wikis}}
+    </ul>
+    {{/domains}}
+</body>
+
+</html>

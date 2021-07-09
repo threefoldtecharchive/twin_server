@@ -1,0 +1,278 @@
+{
+    "defaults": {
+        "store": {
+            "module": "greenlock-store-fs"
+        },
+        "challenges": {
+            "http-01": {
+                "module": "acme-http-01-standalone"
+            }
+        },
+        "renewOffset": "-45d",
+        "renewStagger": "3d",
+        "accountKeyType": "EC-P256",
+        "serverKeyType": "RSA-2048",
+        "subscriberEmail": "hamdy.a.farag@gmail.com"
+    },
+    "sites": [
+        {
+            "subject": "www.consciousinternet.org",
+            "altnames": [
+                "www.consciousinternet.org"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "eco.threefold.io",
+            "altnames": [
+                "eco.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "community.threefold.io",
+            "altnames": [
+                "community.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "eco.threefold.me",
+            "altnames": [
+                "eco.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "community.threefold.me",
+            "altnames": [
+                "community.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "digitaltwin.threefold.io",
+            "altnames": [
+                "digitaltwin.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "example.threefold.io",
+            "altnames": [
+                "example.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "www.myfreeflow.org",
+            "altnames": [
+                "www.myfreeflow.org"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "cloud.threefold.io",
+            "altnames": [
+                "cloud.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "cloud.threefold.me",
+            "altnames": [
+                "cloud.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "farming.threefold.io",
+            "altnames": [
+                "farming.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "farming.threefold.me",
+            "altnames": [
+                "farming.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "www.threefold.io",
+            "altnames": [
+                "www.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "www.threefold.me",
+            "altnames": [
+                "www.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "threefold.me",
+            "altnames": [
+                "threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "new.threefold.io",
+            "altnames": [
+                "new.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "staging.threefold.io",
+            "altnames": [
+                "staging.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "threefold.io",
+            "altnames": [
+                "threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "now.threefold.io",
+            "altnames": [
+                "now.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "marketplace.threefold.io",
+            "altnames": [
+                "marketplace.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "now.threefold.me",
+            "altnames": [
+                "now.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "marketplace.threefold.me",
+            "altnames": [
+                "marketplace.threefold.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "mydigitaltwin.io",
+            "altnames": [
+                "mydigitaltwin.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "www.mydigitaltwin.io",
+            "altnames": [
+                "www.mydigitaltwin.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "www.uhuru.me",
+            "altnames": [
+                "www.uhuru.me"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "cloud-info.threefold.io",
+            "altnames": [
+                "cloud-info.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "cloud-wiki.threefold.io",
+            "altnames": [
+                "cloud-wiki.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "legal.threefold.io",
+            "altnames": [
+                "legal.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "legal-info.threefold.io",
+            "altnames": [
+                "legal-info.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "legal-wiki.threefold.io",
+            "altnames": [
+                "legal-wiki.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "publishtools-info.threefold.io",
+            "altnames": [
+                "publishtools-info.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "sdk.threefold.io",
+            "altnames": [
+                "sdk.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "info.takeactionglobal.org",
+            "altnames": [
+                "info.takeactionglobal.org"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "info.threefold.io",
+            "altnames": [
+                "info.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "wiki.threefold.io",
+            "altnames": [
+                "wiki.threefold.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "info.mydigitaltwin.io",
+            "altnames": [
+                "info.mydigitaltwin.io"
+            ],
+            "renewAt": 1
+        },
+        {
+            "subject": "wiki.mydigitaltwin.io",
+            "altnames": [
+                "wiki.mydigitaltwin.io"
+            ],
+            "renewAt": 1
+        }
+    ]
+}

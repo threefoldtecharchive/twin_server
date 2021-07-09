@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  
+  <h1> {{site_name}} Errors</h1>
+  
+  {{#site_errors}}
+  <h3> Site Errors</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+    <tbody>
+        
+      <tr>
+        <td>{{path}}</td>
+        <td>{{error}}</td>
+      </tr>
+    </tbody>
+  </table>
+ 
+  <br>
+  <br>  
+  {{/site_errors}}
+{{^site_errors}}
+  <h3> Site Errors</h3>
+  <div style="color: green;">
+    No Errors
+  </div>
+ {{/site_errors}}
+
+{{#page_errors}}
+
+{{/page_errors}}
+{{#page_errors}}
+  <h3> Page Errors</h3>
+  
+  <table class="table">
+    
+
+        <h4 style="color:red">{{page}}</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Line</th>
+              <th>Error</th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#errors}}
+            <tr>
+              <td>{{linenr}} : {{line}}</td>
+              <td>{{msg}}</td>
+            </tr>
+            {{/errors}}
+        </tbody>
+
+      </table>
+      {{/page_errors}}
+
+{{^page_errors}}
+<div style="color: green;">
+  No Errors
+</div>
+{{/page_errors}}
+
+</div>
+</body>
+</html>

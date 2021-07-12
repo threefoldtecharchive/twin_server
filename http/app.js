@@ -232,7 +232,6 @@ app.use((req, res, next) => {
     var threebotConnect = false
 
     if (!info.acls) {
-
         return res.status(404).render('sites/404.mustache')
     }
 

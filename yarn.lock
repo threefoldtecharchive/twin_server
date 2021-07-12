@@ -207,10 +207,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@threefoldjimber/digitaltwin-backend@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@threefoldjimber/digitaltwin-backend/-/digitaltwin-backend-1.0.4.tgz#a1f8523a9ba8bc69742cc6a9858b2ccfe1337dd4"
-  integrity sha512-LU2Bu/mTvM3ZGfUm8JIVr39MxVCz1axtPQIOTCjOr2OUUJBBHHTCpWq6k50f0O4eM+KQjv1vvGULSqIITvIdng==
+"@threefoldjimber/digitaltwin-backend@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@threefoldjimber/digitaltwin-backend/-/digitaltwin-backend-1.0.5.tgz#4262972a0f122b3b6e04ee76ed4198bacccc08cb"
+  integrity sha512-qXvzv9+7Onjq9jQB6BLRYDk61nBEu6W2zUF77D6oZjcUE2aWaFkCdAlbU7kCXoFlw8girPetBWOlowRSNa2C/g==
   dependencies:
     "@threefoldjimber/threefold_login" "^1.4.0"
     "@types/express-fileupload" "^1.1.6"

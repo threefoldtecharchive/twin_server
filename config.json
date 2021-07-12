@@ -8,7 +8,9 @@
         "port": 80,
         "session":{
             "secret": "fbc5def3-bbef-4836-8c76-51e0cef14e2f"
-        }
+        },
+	    "devport": 3000,
+        "publishtoolsPort": 9998
     },
 
     "hyperdrive" : {

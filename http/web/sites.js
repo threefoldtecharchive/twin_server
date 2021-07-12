@@ -5,6 +5,26 @@ const config = require('../../config')
 
 const logger = require('../../logger')
 const path = require('path')
+var axios  = require('axios')
+
+async function getContent(path, encoding, info){
+    var content = ""
+    var options =  {}
+    
+    if(encoding == 'binary'){
+        options = {responseType :'arraybuffer'}
+    }
+    await axios.get(`http://localhost:${config.http.publishtoolsPort}/info`+path, options).then(response => {
+        content = response.data
+        if(encoding != 'binary')
+            content = await(rewriteRoles(content, info))
+    }).catch(error => {
+        if(error.response){
+            throw new Error("not ound")
+        }
+    });
+    return content
+}
 
 async function rewriteRoles(content, info){
     
@@ -231,17 +251,14 @@ async function handleWikiFile(req, res, info){
 
     // `/${req.params.wikiname}/${req.params.filename}`
     var entry = null
-    try {
-        entry = await driveObj.promises.stat(filepath)
-        var content = await  driveObj.promises.readFile(filepath, encoding, true);
-        if(encoding != 'binary')
-            content = await(rewriteRoles(content, info))
-        return res.send(content)
-       
-    } catch (e) {
+    httppath = filepath.replace('wiki_', '')
+    var content = null
+
+    try{
+        content =  await getContent(httppath, encoding, info)
+    }catch(e){
         newfilename = filename.replace(".md", "")
         var def = config.info.defs[newfilename]
-       
         if (def){
             wikiname = `wiki_${def.wikiname}`
             filename = `${def.pagename}.md`
@@ -253,20 +270,18 @@ async function handleWikiFile(req, res, info){
                     driveObj =  item.drive
                 }
             }
-            
-            try{
-                entry = await driveObj.promises.stat(filepath)
-                var content = await  driveObj.promises.readFile(filepath, encoding);
-                content = await(rewriteRoles(content, info))
-                return res.send(content)
-            }catch(e){
-                // return res.status(404).send(`File not found : ${filepath}`);
-                return res.status(404).render('sites/404.mustache')
-            }            
+            httppath = filepath.replace('wiki_', '')
+            content =  await getContent(httppath, encoding, info)
         }
-        // return res.status(404).send(`File not found : ${filepath}`);
-        return res.status(404).render('sites/404.mustache')
     }
+    if(content){
+        if (encoding == 'binary'){
+            content = Buffer.from(content, 'binary')
+        }
+        
+        return res.send(content)
+    }
+    return res.status(404).render('sites/404.mustache')
 }
 
 router.get('/login', asyncHandler(async (req, res) =>  {

@@ -13,7 +13,7 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag threefoldjimber/digitaltwin:${{ github.sha }} --build-arg WWW_DIGITALTWIN_BRANCH=development
+        run: docker build . --file digitaltwin.Dockerfile --tag threefoldjimber/digitaltwin:${{ github.sha }} --build-arg WWW_DIGITALTWIN_BRANCH=development
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Push to dockerhub

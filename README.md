@@ -48,10 +48,7 @@ Digitaltinw provides
 - `publishtools publish_config_save` Save the config file you are using in `~/.publisher/sites.json`
 
 # Run Digitaltwin
+- `publishtools develop` Run publishtools (required now to get wikis from) 
 - `node server` dev mode
 - `NODE_ENV=production SERET=mysecret  THREEBOT_PHRASE="my threebot phrase" node server` production without ssl handling (ssl offloading)
 - `NODE_ENV=production SERET=mysecret ENABLE_SSL=true THREEBOT_PHRASE="my threebot phrase" node server` production with (ssl)
-
-# Run from publishtools (advanced)
-- `publishtools digitaltwin -d start` dev mode
-- `publishtools digitaltwin start` production mode

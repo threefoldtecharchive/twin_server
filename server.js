@@ -129,10 +129,12 @@ async function main(){
     const app = require('./http/app.js')
 
     if (!config.nodejs.production){
-      var port = config.http.port
+      var port = config.http.devport
       server = http.createServer(app);
       startSocketIo(server);
-      server.listen(port);
+      server.listen(port, "0.0.0.0", () => {	
+        console.log(chalk.green(`✓ (HTTP Server) : http://localhost:${port}`));
+      })
     }else{
       // greenlock/letsencrypt ssl production server
       if (config.nodejs.ssl){
@@ -151,11 +153,12 @@ async function main(){
         server.serve(app);
       }else{
         // production without ssl
-        console.log("here")
         var port = config.http.port
         server = http.createServer(app);
         startSocketIo(server);
-        server.listen(port)
+        server.listen(port, "0.0.0.0", () => {	
+          console.log(chalk.green(`✓ (HTTP Server) : http://localhost`));
+        })
       }
     }
   }

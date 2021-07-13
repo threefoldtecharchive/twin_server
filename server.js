@@ -132,7 +132,7 @@ async function main(){
       var port = config.http.devport
       server = http.createServer(app);
       startSocketIo(server);
-      server.listen(port, "0.0.0.0", () => {	
+      server.listen(port, undefined, () => {
         console.log(chalk.green(`✓ (HTTP Server) : http://localhost:${port}`));
       })
     }else{
@@ -156,7 +156,7 @@ async function main(){
         var port = config.http.port
         server = http.createServer(app);
         startSocketIo(server);
-        server.listen(port, "0.0.0.0", () => {	
+        server.listen(port, undefined, () => {
           console.log(chalk.green(`✓ (HTTP Server) : http://localhost`));
         })
       }

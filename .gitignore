@@ -23,7 +23,6 @@ yarn-error.log*
 *.sw*
 *.so.*
 *.node
-digitaltwin
 build
 package-lock.json
 .greenlockrci

@@ -48,6 +48,8 @@ RUN publishtools publish_config_save
 RUN mkdir /publisher
 WORKDIR /publisher
 COPY . .
+RUN rm config.json
+RUN cp ./digitaltwin/config.json ./config.json
 RUN rm -rf node_modules
 RUN yarn install
 

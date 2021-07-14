@@ -1,0 +1,36 @@
+{
+  "dns":{
+    "port": 5352,
+    "enabled": true
+  },
+
+  "http":{
+    "port": 80,
+    "session":{
+      "secret": "fbc5def3-bbef-4836-8c76-51e0cef14e2f"
+    },
+    "devport": 80,
+    "publishtoolsPort": 9998
+  },
+
+  "hyperdrive" : {
+    "path" : "~/.digitaltwin",
+    "enabled": false,
+    "drives": [{"name": "one", "key": "443555d3c71c06b95726d1a5cf18c7c164b86c13d2b17cb3dfb73acd49341dfa"}]
+  },
+
+  "publishtools" : {
+    "root" : "~/.publisher/publish/"
+  },
+
+  "threebot": {
+    "passPhrase" : "analyst wrist friend quick person embrace spell bacon congress gorilla price figure mind camp vanish enrich large rhythm space garden arrive doctor poverty special"
+  },
+
+  "nodejs":{
+    "production": false,
+    "ssl": false
+  },
+
+  "info": {}
+}

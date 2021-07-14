@@ -7,7 +7,7 @@
   "cat":	2,
   "shortname":	"digitaltwin",
   "path_code":	"",
-  "domains":	["digitaltwin.threefold.io", "replace_user_id.digitaltwin.jimbertesting.be", "replace_user_id-chat"],
+  "domains":	["digitaltwin.threefold.io", "replace_user_id.digitaltwin.jimbertesting.be", "replace_user_id-chat", "replace_user_id.digitaltwin-test.jimbertesting.be"],
   "descr":	"Digital twin frontend",
   "groups":	[],
   "acl":  [{

@@ -125,6 +125,7 @@ app.use(function (req, res, next) {
 
 
     var info = null
+    console.log(config.info)
 
     if (host == 'localhost') {
         info = config.info.websites['digitaltwin']

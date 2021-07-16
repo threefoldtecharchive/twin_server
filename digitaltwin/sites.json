@@ -1,0 +1,29 @@
+[{
+  "name":	"www_digitaltwin",
+  "url":	"https://github.com/threefoldtech/www_digitaltwin",
+  "branch":	"replace_www_digitaltwin_branch",
+  "pull":	false,
+  "reset":	false,
+  "cat":	2,
+  "shortname":	"digitaltwin",
+  "path_code":	"",
+  "domains":	["digitaltwin.threefold.io", "replace_user_id.digitaltwin.jimbertesting.be", "replace_user_id-chat", "replace_user_id.digitaltwin-test.jimbertesting.be"],
+  "descr":	"Digital twin frontend",
+  "groups":	[],
+  "acl":  [{
+    "groups":       [],
+    "users":        ["replace_user_id"],
+    "rights":       "RW",
+    "secrets":      []
+  }],
+  "trackingid":	"",
+  "opengraph":	{
+    "title":	"",
+    "description":	"",
+    "url":	"",
+    "type_":	"article",
+    "image":	"",
+    "image_width":	"1200",
+    "image_height":	"630"
+  }
+}]

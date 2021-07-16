@@ -2,105 +2,105 @@ var path = require('path')
 const chalk = require('chalk');
 const groups = require('./groups')
 var utils = require('../utils')
-
+const systemprocess = require('process')
 
 async function process(drive, dir){
     var p = path.join("/", dir)
 
-    var configfilepath = path.join("..", p, "sites.json")
+    var configdirpath = path.join("..", p, 'config')
+    
     try{
-        await drive.promises.stat(configfilepath)
+        await drive.promises.stat(configdirpath)
+        // check for digitaltwin website
+        await drive.promises.stat( path.join(configdirpath, "site_www_digitaltwin.json"))
         
     }catch(e){
-        console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored (missing site.json)`))
-        return
+        console.log(chalk.red(`    X (Drive (${drive.name}) Ignored (missing site_www_digitaltwin.json)`))
+        console.log(chalk.red(`    X (Publisher) can not operate without site_www_digitaltwin.json)`))
+        systemprocess.exit(1)
     }
 
     var sitesConfig = {}
     var sitegroups = {}
 
+    var files = await  drive.promises.readdir(configdirpath)
+    
+    var filename = ""
     try{
-        var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
-        data = JSON.parse(data)
-        
-        for(var i=0; i <data.length; i++){
-            var item = data[i]
-            var url = item.url.split("/")
-            var isWebsite = item.cat == 2
-            var isWiki = item.cat == 0
-            var name = url[url.length-1].replace(".git", "")
-            if(isWebsite){
-                name = name
-            }else if (isWiki){
-                name = `wiki_${item.shortname}`
-            }else{
-                continue
-            }
 
-            item.repo = url[url.length-1]
-            sitesConfig[name] = item
-            for (var k=0; k<sitesConfig[name].groups.length; k++){
-                var g = sitesConfig[name].groups[k]
-                if (!(g.name in sitegroups)){
-                    sitegroups[g.name] = {"users": g.members_users, "groups": g.members_groups}
+        for(var i=0; i <  files.length; i++){
+            filename = files[i]
+            var configfilepath =  path.join(configdirpath, filename)
+            if(filename.startsWith("site_")){
+                var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
+                var item = JSON.parse(data)
+                var url = item.git_url.split("/")
+                
+                var isWebsite = item.cat == 2
+                var isWiki = item.cat == 0
+                var name = item.name
+                if(isWebsite){
+                    name = `www_${item.name}`
+                }else if (isWiki){
+                    name = `wiki_${item.name}`
+                }else{
+                    continue
                 }
-            }   
+                var tree = url.indexOf('tree')
+                item.repo = url[tree-1]
+                sitesConfig[name] = item
+            }else if (filename.startsWith("groups_")){
+                var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
+                var item = JSON.parse(data)
+                for (var k=0; k<item.length; k++){
+                    var g = item[k]
+                    if (!(g.name in sitegroups)){
+                        sitegroups[g.name] = {"users": g.members_users, "groups": g.members_groups}
+                    }
+                }
+            }
         }
+
+
     }catch(e){
-        console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored (error parsing sites.json)`))
+        console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored (${filename})`))
         return
     }
     var info = {"websites": {}, "wikis": {}}
     var domains = {}
 
     var dirs = await drive.promises.readdir(p)
-    
     var groupObj = await groups.load(sitegroups)
+    // ignore wiki dirs (coming from publishtools now)
+    dirs = dirs.filter((item) => {if(!item.startsWith(".") && !item.startsWith("wiki")){return item}}).sort()
     
-    dirs = dirs.filter((item) => {if(!item.startsWith(".")){return item}}).sort()
-
-    var defs = {}
+    // process sites
     for(var i=0; i < dirs.length; i++){
         if(! (dirs[i] in sitesConfig)){
-            console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored repo ${dirs[i]} (no config for this repo in sites.json)`))
+            console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored repo ${dirs[i]} (no config file for this repo)`))
             continue
         }
-
+        
         var dir = path.join(p, dirs[i])
-
+        
         var siteinfo = sitesConfig[dirs[i]]
-
-        var isWebSite = siteinfo.name.startsWith("www")
+        var isWebSite = siteinfo.cat == 2
 
         var item =  isWebSite? "websites" : "wikis"
 
-        var alias = siteinfo.shortname
-
+        var alias = siteinfo.name
+        
         if (alias in info[item]){
             console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignoring path: ${dir} duplicated alias`))
             continue
         }
-
-        // load defs from wikis
-        if(!isWebSite){
-            try{
-                var defpath = path.join(dir, 'defs.json')
-                var defdata = await  drive.promises.readFile(defpath, 'utf8', false);
-                defInfo = JSON.parse(defdata)
-                for(var k=0; k< defInfo.defs.length; k++){
-                    var obj = defInfo.defs[k]
-                    defs[obj.def] = {"wikiname": obj.site, "pagename": obj.page}
-                }
-            }catch(e){
-                console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignoring path: ${dir} Error reading: ${defpath}`))
-            }
-        }
+        
         var acls = await groupObj.parseAcl(siteinfo.acl)
         var val = {
             "drive": drive,
             "dir": dir,
             "repo": siteinfo.repo,
-            "alias": siteinfo.shortname,
+            "alias": siteinfo.name,
             "isWebSite": isWebSite,
             "acls": acls,
             "domains": siteinfo.domains,
@@ -113,8 +113,33 @@ async function process(drive, dir){
             domains[domain] = val
         }
     }
-    info["defs"] = defs
+    // process wikis
+    for(var wiki in sitesConfig){
+        var siteinfo = sitesConfig[wiki]
+        if(siteinfo.cat == 0){
+            var dir = path.join(p,  `wiki_${siteinfo.name}`)
+            var alias = siteinfo.name
+            var acls = await groupObj.parseAcl(siteinfo.acl)
+            var val = {
+                "drive": drive,
+                "dir": dir,
+                "repo": siteinfo.repo,
+                "alias": siteinfo.name,
+                "isWebSite": false,
+                "acls": acls,
+                "domains": siteinfo.domains,
+                "subPath": false
+            }
+            info["wikis"][alias] = val
+
+            for(var k=0; k < siteinfo.domains.length; k++){
+                var domain = siteinfo.domains[k]
+                domains[domain] = val
+        }
+        }
+    }
     info["domains"] = domains
+    console.log(info)
     return info
 }
 
@@ -127,14 +152,14 @@ async function loadInfo(drive){
 }
 
 async function reduce(items){
-    var res = {"websites": {}, "wikis": {}, "defs": {}, "domains": {}}
+    var res = {"websites": {}, "wikis": {}, "domains": {}}
     
     for(var i=0; i<items.length; i++){
         var obj = items[i]
         
-        for(var def in obj.defs){
-            res.defs[def] = obj.defs[def]
-        }
+        // for(var def in obj.defs){
+        //     res.defs[def] = obj.defs[def]
+        // }
 
         for(var d in obj.domains){
             res.domains[d] = obj.domains[d]

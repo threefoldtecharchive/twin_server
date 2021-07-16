@@ -257,22 +257,23 @@ async function handleWikiFile(req, res, info){
     try{
         content =  await getContent(httppath, encoding, info)
     }catch(e){
-        newfilename = filename.replace(".md", "")
-        var def = config.info.defs[newfilename]
-        if (def){
-            wikiname = `wiki_${def.wikiname}`
-            filename = `${def.pagename}.md`
-            filepath = `/${wikiname}/${filename}`
+        // newfilename = filename.replace(".md", "")
+        // var def = config.info.defs[newfilename]
+        // if (def){
+        wikiname = `wiki_${def.wikiname}`
+        filename = `${def.pagename}.md`
+        filepath = `/${wikiname}/${filename}`
 
-            for(var alias in config.info.wikis){
-                var item = config.info.wikis[alias]
-                if(item.dir == `/${wikiname}`){
-                    driveObj =  item.drive
-                }
+        for(var alias in config.info.wikis){
+            var item = config.info.wikis[alias]
+            if(item.dir == `/${wikiname}`){
+                driveObj =  item.drive
             }
-            httppath = filepath.replace('wiki_', '')
-            content =  await getContent(httppath, encoding, info)
         }
+
+        httppath = filepath.replace('wiki_', '')
+        content =  await getContent(httppath, encoding, info)
+        // }
     }
     if(content){
         if (encoding == 'binary'){

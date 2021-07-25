@@ -1,11 +1,16 @@
 set -e
 
+export PUBLISHTOOLSBRANCH=master
+
 if [ -d "/workspace" ] 
 then
     if ! [ -d "/workspace/publishtools" ] 
     then
         pushd /workspace "$@" > /dev/null
         git clone https://github.com/crystaluniverse/publishtools
+        #which version of publish tools do you want
+        cd publishtools
+        git checkout $PUBLISHTOOLSBRANCH
         popd "$@" > /dev/null
         pushd /workspace/publishtools/scripts_workspace "$@" > /dev/null
         bash install.sh
@@ -20,6 +25,9 @@ else
     then
         pushd ~/code
         git clone https://github.com/crystaluniverse/publishtools
+        #which version of publish tools do you want
+        cd publishtools
+        git checkout $PUBLISHTOOLSBRANCH
         popd "$@" > /dev/null
         # pushd ~/code/publishtools/scripts
         # bash build_fast.sh

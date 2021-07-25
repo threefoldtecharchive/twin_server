@@ -1,4 +1,4 @@
-## Digital twin application.
+## Digital twin configuration.
 
 This will give you the tools to take back the ownership of your digital self.
 In a first phase you will be able to communicate safely and peer2peer with other people in the ThreeFold Network through a chat implementation.

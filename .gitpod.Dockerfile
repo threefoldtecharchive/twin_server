@@ -21,6 +21,9 @@ FROM gitpod/workspace-full:latest
 
 USER root
 RUN apt-get update && apt-get install -y mc rsync 
+RUN apt-get install -y curl musl-tools nano iputils-ping procps iproute2 imagemagick sed build-essential libsodium-dev redis-server tmux
+
+
 
 COPY --from=builder /src/yggdrasil    /usr/bin/
 COPY --from=builder /src/yggdrasilctl /usr/bin/
@@ -28,7 +31,7 @@ COPY --from=builder /tmp/dumb-init    /usr/bin/
 RUN mkdir /var/log/yggdrasil
 
 #prepare for gitpod nodejs env
-# RUN bash gitpod_scripts/install_docker.sh
+RUN bash gitpod_scripts/install_docker.sh
 
 # RUN apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 

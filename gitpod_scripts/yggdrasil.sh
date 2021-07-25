@@ -7,7 +7,7 @@ cd /tmp/src
 
 git reset --hard v${YGGDRASIL_VERSION}
 ./build
-
+cp yggdrasil* /usr/bin/
 # curl -sSfLo /tmp/dumb-init "https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64"
 
 # chmod 0755 /tmp/dumb-init

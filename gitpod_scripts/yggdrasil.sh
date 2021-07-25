@@ -2,10 +2,12 @@ set -ex
 export DUMB_INIT_VERSION=1.2.2
 export YGGDRASIL_VERSION=0.3.15
 
-git clone "https://github.com/yggdrasil-network/yggdrasil-go.git" /tmp/src
-pushd /tmp/src
+apt install golang -y
 
-git reset --hard v${YGGDRASIL_VERSION}
+git clone "https://github.com/yggdrasil-network/yggdrasil-go.git" /tmp/yggdrasil
+pushd /tmp/yggdrasil
+
+# git reset --hard v${YGGDRASIL_VERSION}
 ./build
 sudo cp yggdrasil* /usr/bin/
 popd
@@ -17,3 +19,7 @@ popd
 mkdir -p /var/log/yggdrasil
 
 
+yggdrasil -genconf > /etc/yggdrasil.conf
+
+
+# sudo yggdrasil -useconffile /etc/yggdrasil.conf

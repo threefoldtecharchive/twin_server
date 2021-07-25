@@ -10,7 +10,7 @@ RUN apt-get install -y curl musl-tools nano iputils-ping procps iproute2 imagema
 
 ADD gitpod_scripts/* /tmp/
 
-RUN bash /tmp/yggdrasil.sh
+# RUN bash /tmp/yggdrasil.sh
 
 #prepare for gitpod nodejs env
 RUN bash /tmp/nodejs.sh

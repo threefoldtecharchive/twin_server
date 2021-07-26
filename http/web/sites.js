@@ -257,23 +257,13 @@ async function handleWikiFile(req, res, info){
     try{
         content =  await getContent(httppath, encoding, info)
     }catch(e){
-        // newfilename = filename.replace(".md", "")
-        // var def = config.info.defs[newfilename]
-        // if (def){
-        wikiname = `wiki_${def.wikiname}`
-        filename = `${def.pagename}.md`
-        filepath = `/${wikiname}/${filename}`
-
-        for(var alias in config.info.wikis){
-            var item = config.info.wikis[alias]
-            if(item.dir == `/${wikiname}`){
-                driveObj =  item.drive
-            }
-        }
 
         httppath = filepath.replace('wiki_', '')
-        content =  await getContent(httppath, encoding, info)
-        // }
+        try{
+            content =  await getContent(httppath, encoding, info)
+        }catch(e){
+            console.log("could not find " + httppath)
+        }
     }
     if(content){
         if (encoding == 'binary'){
@@ -464,6 +454,7 @@ router.get('/:path', asyncHandler(async (req, res) =>  {
 
             var entry = null
             try {
+                
                 entry = await driveObj.promises.stat(filepath)
                 var content = await  driveObj.promises.readFile(filepath, 'utf8', true);
                 return res.send(content)
@@ -480,27 +471,42 @@ router.get('/:path', asyncHandler(async (req, res) =>  {
 
 router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
     var name = req.params.wiki.toLowerCase()
-    var driveObj = req.info.drive
     var filepath = ""
     contenttype = 'utf8'
-
+    var dir = req.info.dir
+    var driveObj = req.info.drive
     if (name.endsWith("js") || name.endsWith("css")){   
-        filepath = path.join('..', 'static', name)
         if (name.endsWith('js'))
             res.type("text/javascript")
         else if  (name.endsWith('css'))
             res.type("text/css")
+
+        filepath = path.join('..', 'static', name)
+        
+        var entry = null
+        try {
+            
+            entry = await driveObj.promises.stat(filepath)
+            var content = await  driveObj.promises.readFile(filepath, 'utf8', true);
+            return res.send(content)
+        } catch (e) {
+            logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
+            // return res.status(404).send(`File not found : ${filepath}`);
+            return res.status(404).render('sites/404.mustache')
+        }
+
     }else{
-        var dir = req.info.dir
         filepath = `${dir}/index.html`
     }
-
+        
     var entry = null
     try {
-        entry = await driveObj.promises.stat(filepath)
-        var content = await  driveObj.promises.readFile(filepath, 'utf8', true);
+        
+        httppath = filepath.replace('wiki_', '')
+        content =  await getContent(httppath, 'utf-8', req.info)
         return res.send(content)
     } catch (e) {
+        console.log(e)
         logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
         // return res.status(404).send(`File not found : ${filepath}`);
         return res.status(404).render('sites/404.mustache')

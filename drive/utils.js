@@ -11,12 +11,8 @@ async function process(drive, dir){
     
     try{
         await drive.promises.stat(configdirpath)
-        // check for digitaltwin website
-        await drive.promises.stat( path.join(configdirpath, "site_www_digitaltwin.json"))
-        
     }catch(e){
-        console.log(chalk.red(`    X (Drive (${drive.name}) Ignored (missing site_www_digitaltwin.json)`))
-        console.log(chalk.red(`    X (Publisher) can not operate without site_www_digitaltwin.json)`))
+        console.log(chalk.red(`    X (Twin Server) missing config dir)`))
         systemprocess.exit(1)
     }
 
@@ -66,6 +62,7 @@ async function process(drive, dir){
         console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored (${filename})`))
         return
     }
+    
     var info = {"websites": {}, "wikis": {}}
     var domains = {}
 
@@ -77,9 +74,18 @@ async function process(drive, dir){
     // process sites
     for(var i=0; i < dirs.length; i++){
         if(! (dirs[i] in sitesConfig)){
-            console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored repo ${dirs[i]} (no config file for this repo)`))
-            continue
+            if(`www_${dirs[i]}` in sitesConfig){
+                var o = Object.assign({}, sitesConfig[`www_${dirs[i]}`])
+              
+                delete sitesConfig[`www_${dirs[i]}`]
+                sitesConfig[dirs[i]] = o
+            }else{
+                console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored repo ${dirs[i]} (no config file for this repo)`))
+                continue
+            }
         }
+        
+
         
         var dir = path.join(p, dirs[i])
         

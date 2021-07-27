@@ -125,17 +125,14 @@ app.use(function (req, res, next) {
 
 
     var info = null
-    console.log(config.info)
-
     if (host == 'localhost') {
-        info = config.info.websites['digitaltwin']
+        info = config.info.websites['twin_aydo']
     } else {
         info = config.info.domains[host]
         if (!info) {
             return res.status(404).render('sites/404.mustache')
         }
     }
-
     // @todo: replace with proper redirection in config
     if (req.url == '/legal.md' || req.url == '/legal' || req.url == '/info/threefold/legal.md' || req.url == '/info/threefold/legal') {
         res.writeHead(302, {
@@ -151,7 +148,7 @@ app.use(function (req, res, next) {
         alias = splitted[0]
 
         if (host == 'localhost') {
-            info = config.info.websites['digitaltwin']
+            info = config.info.websites['twin_aydo']
         } else {
             info = config.info.domains[host]
         }

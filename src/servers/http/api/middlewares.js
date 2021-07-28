@@ -1,98 +1,6 @@
-const express = require('express');
-var session = require('express-session')
-
-const mustacheExpress = require('mustache-express');
-const config = require('../config')
-
-const cors = require('cors');
-const sites = require('./web/sites')
-const threebot = require('./web/threebot')
-const admin = require('./api/admin')
-var morgan = require('morgan')
-
-var path = require('path')
-var rfs = require('rotating-file-stream')
-const bodyParser = require('body-parser');
-const fileupload = require('express-fileupload')
-const {initAll, httpLogger, errorMiddleware, routes} = require("@threefoldjimber/digitaltwin-backend")
-
-let app = express()
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(
-    morgan('short', {
-        stream: {
-            write: (text) => {
-                if (httpLogger?.http)
-                    httpLogger.http(text);
-                else console.log(text)
-            },
-        },
-    }),
-);
-
-app.use(errorMiddleware);
-
-// app.enable('trust proxy');
-app.set('trust proxy', 1);
-
-app.use(
-    session({
-        name: 'sessionId',
-        secret: 'secretpassphrase',
-        resave: false,
-        saveUninitialized: false,
-        proxy: true,
-        cookie: {
-            path: '/',
-            httpOnly: false,
-            secure: false,
-        },
-    }),
-);
-
-app.use(bodyParser.raw());
-app.use(bodyParser.urlencoded({limit: '100mb', extended: false}));
-app.use(bodyParser.json({limit: '100mb'}));
-
-app.use(
-    fileupload({
-        useTempFiles: true,
-        parseNested: true,
-    }),
-);
-
-app.use('/api/', routes);
-//Reading data
-initAll();
-
-// Session
-var sess = {
-    secret: config.http.session.secret,
-    cookie: {},
-    resave: true,
-    saveUninitialized: true
-}
-
-if (config.nodejs.production) {
-    app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
-}
-
-app.use(session(sess))
-
-app.engine('mustache', mustacheExpress());
-app.set('view engine', 'mustache');
-
-// logging (rotating fs)
-var accessLogStream = rfs.createStream('access.log', {
-    interval: '1d', // rotate daily
-    path: path.join(__dirname, '..', 'logs')
-})
-
-app.use(morgan('combined', {stream: accessLogStream}))
-
 // req info
-app.use(function (req, res, next) {
+
+export const requestInfoMiddleware =  (req, res, next) => {
     var port = 443
     var host = ""
 
@@ -217,9 +125,9 @@ app.use(function (req, res, next) {
     req.info.url = req.url
     next()
     return
-})
+}
 
-app.use((req, res, next) => {
+export const loginMiddleware = (req, res, next) => {
     if (req.url.startsWith('/threebot') || req.url.startsWith('/logout')) {
         next()
         return
@@ -261,11 +169,10 @@ app.use((req, res, next) => {
         next()
         return
     }
-})
-
+}
 
 // stellar.toml
-app.use((req, res, next) => {
+export const stellarMiddleware = (req, res, next) => {
 
     if (req.url == '/.well-known/stellar.toml') {
         stellar = `[[CURRENCIES]]
@@ -291,10 +198,10 @@ image = "https://raw.githubusercontent.com/threefoldfoundation/www_threefold_io/
     } else {
         next()
     }
-})
+}
 
-//ACLS
-app.use((req, res, next) => {
+
+export const aclsMiddleware = (req, res, next) => {
     if (req.session.authorized && !req.url.startsWith('/logout')) {
         var info = req.info
         if (req.session.authorization_mechanism == 'password') {
@@ -317,12 +224,4 @@ app.use((req, res, next) => {
     }
     next()
     return
-})
-
-app.use(express.json());
-app.use(threebot)
-app.use("/admin", admin)
-app.use(sites);
-app.use(cors({origin: '*', optionsSuccessStatus: 200}));
-
-module.exports = app
+}

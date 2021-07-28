@@ -37,12 +37,10 @@ async function getContent(filepath, httppath, encoding, info){
                 content = await(rewriteRoles(content, info))
             
         }catch(e){
-            console.log(e)
             if(e.response){
                 throw new Error("not ound")
             }
         }
-        console.log(content)
         return content
     }
 }

@@ -126,7 +126,7 @@ app.use(function (req, res, next) {
 
     var info = null
     if (host == 'localhost') {
-        info = config.info.websites['twin_aydo']
+        info = config.info.websites['aydo']
     } else {
         info = config.info.domains[host]
         if (!info) {
@@ -148,7 +148,7 @@ app.use(function (req, res, next) {
         alias = splitted[0]
 
         if (host == 'localhost') {
-            info = config.info.websites['twin_aydo']
+            info = config.info.websites['aydo']
         } else {
             info = config.info.domains[host]
         }

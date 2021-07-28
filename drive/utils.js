@@ -94,7 +94,7 @@ async function process(drive, dir){
 
         var item =  isWebSite? "websites" : "wikis"
 
-        var alias = siteinfo.name
+        var alias = siteinfo.prefix
         
         if (alias in info[item]){
             console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignoring path: ${dir} duplicated alias`))
@@ -106,7 +106,7 @@ async function process(drive, dir){
             "drive": drive,
             "dir": dir,
             "repo": siteinfo.repo,
-            "alias": siteinfo.name,
+            "alias": alias,
             "isWebSite": isWebSite,
             "acls": acls,
             "domains": siteinfo.domains,

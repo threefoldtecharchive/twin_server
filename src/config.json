@@ -1,6 +1,6 @@
 {
     "dns":{
-        "port": 5352,
+        "port": 53,
         "enabled": true
     },
 

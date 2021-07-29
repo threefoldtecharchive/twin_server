@@ -40,7 +40,6 @@ async function getContent(filepath, httppath, encoding, info){
                 throw new Error("not ound")
             }
         }
-        console.log(content)
         return content
     }
 }
@@ -76,7 +75,7 @@ async function rewriteRoles(content, info){
             content = content.replace(new RegExp(`https://${item}`, "g"), `${host}${prefix}`)
             content = content.replace(new RegExp(`http://${item}/`, "g"), `${host}${prefix}`)
             content = content.replace(new RegExp(`http://${item}`, "g"), `${host}${prefix}`)
-            if(site.alias == "digitaltwin"){
+            if(site.alias == "aydo"){
                 content = content.replace(new RegExp(`/${site.alias}/`, "g"), "/")
             }
             

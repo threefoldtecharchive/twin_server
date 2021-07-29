@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const process = require('process');
 
 const config = require('./config')
-const localDrive = require('./drive/local')
+const localDrive = require('./servers/http/api/drive/local')
 const hyperdrive = require('./drive/hyperdrive');
 const utils = require('./drive/utils')
 const dnsserver = require("./servers/dns")

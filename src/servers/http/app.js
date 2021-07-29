@@ -288,7 +288,13 @@ image = "https://raw.githubusercontent.com/threefoldfoundation/www_threefold_io/
         res.set('Access-Control-Allow-Origin', '*');
         res.send(stellar)
         return
-    } else {
+    } else if (req.url == '/google9dcad2debe4b606f.html'){
+        res.set('Content-Type', 'text/html');
+        res.set('Access-Control-Allow-Origin', '*');
+        res.send('google-site-verification: google9dcad2debe4b606f.html')
+        return
+
+    }else {
         next()
     }
 })

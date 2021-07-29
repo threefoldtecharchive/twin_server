@@ -3,10 +3,10 @@ const chalk = require('chalk');
 const process = require('process');
 
 const config = require('./config')
-const localDrive = require('./drive/local')
-const hyperdrive = require('./drive/hyperdrive');
-const utils = require('./drive/utils')
-const dnsserver = require("./servers/dns")
+const localDrive = require('./servers/http/api/drive/local')
+const hyperdrive = require('./servers/http/api/drive/hyperdrive');
+const utils = require('./servers/http/api/drive/utils')
+const dnsserver = require("./servers/dns/dns")
 var rewrite = require('./rewrite')
 
 var letsencrypt = require('./letsencrypt')

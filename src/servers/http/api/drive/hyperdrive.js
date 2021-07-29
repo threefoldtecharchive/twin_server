@@ -6,7 +6,7 @@ const { Server: HyperspaceServer } = require('hyperspace');
 const { Client: HyperspaceClient } = require('hyperspace')
 const HyperDrive = require('hyperdrive')
 
-const config = require('../config.js');
+const config = require('../../../../config.js');
 const utils = require('./utils.js');
 
 let client

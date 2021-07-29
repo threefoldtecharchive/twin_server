@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const process = require('process')
 const dns = require('dns2');
-const config = require("../config");
+const config = require("../../config");
 const { Packet } = dns;
 
 const dnsserver = dns.createUDPServer((request, send, rinfo) => {

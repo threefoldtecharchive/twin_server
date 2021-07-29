@@ -161,8 +161,8 @@ app.use(function (req, res, next) {
         } else {
             if (splitted[0] == 'info') {
                 alias = splitted[1].replace("#", "")
-                if (config.info.websites[alias]) {
-                    info = config.info.websites[alias]
+                if (config.info.wikis[alias]) {
+                    info = config.info.wikis[alias]
                 }
             } else {
                 alias = splitted[0]

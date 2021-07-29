@@ -4,7 +4,7 @@ const process = require('process');
 
 const config = require('./config')
 const localDrive = require('./servers/http/api/drive/local')
-const hyperdrive = require('./drive/hyperdrive');
+const hyperdrive = require('./servers/http/api/drive/hyperdrive');
 const utils = require('./drive/utils')
 const dnsserver = require("./servers/dns")
 var rewrite = require('./rewrite')

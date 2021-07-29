@@ -1,7 +1,7 @@
 var path = require('path')
 const chalk = require('chalk');
 const groups = require('./groups')
-var utils = require('../utils')
+var utils = require('../../../../utils')
 const systemprocess = require('process')
 
 async function process(drive, dir){
@@ -11,17 +11,8 @@ async function process(drive, dir){
     
     try{
         await drive.promises.stat(configdirpath)
-<<<<<<< HEAD
-        // check for digitaltwin website
-        await drive.promises.stat( path.join(configdirpath, "site_www_digitaltwin.json"))
-        
-    }catch(e){
-        console.log(chalk.red(`    X (Drive (${drive.name}) Ignored (missing site_www_digitaltwin.json)`))
-        console.log(chalk.red(`    X (Publisher) can not operate without site_www_digitaltwin.json)`))
-=======
     }catch(e){
         console.log(chalk.red(`    X (Twin Server) missing config dir)`))
->>>>>>> main
         systemprocess.exit(1)
     }
 
@@ -83,12 +74,6 @@ async function process(drive, dir){
     // process sites
     for(var i=0; i < dirs.length; i++){
         if(! (dirs[i] in sitesConfig)){
-<<<<<<< HEAD
-            console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignored repo ${dirs[i]} (no config file for this repo)`))
-            continue
-        }
-        
-=======
             if(`www_${dirs[i]}` in sitesConfig){
                 var o = Object.assign({}, sitesConfig[`www_${dirs[i]}`])
               
@@ -102,7 +87,6 @@ async function process(drive, dir){
         
 
         
->>>>>>> main
         var dir = path.join(p, dirs[i])
         
         var siteinfo = sitesConfig[dirs[i]]

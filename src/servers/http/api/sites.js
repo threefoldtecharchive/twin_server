@@ -1,30 +1,50 @@
 var express = require('express');
 var router = express.Router();
 const asyncHandler = require('express-async-handler')
-const config = require('../../config')
+const config = require('../../../config')
 
-const logger = require('../../logger')
+const logger = require('../../../logger')
 const path = require('path')
 var axios  = require('axios')
 
-async function getContent(path, encoding, info){
+async function getContent(filepath, httppath, encoding, info){
     var content = ""
-    var options =  {}
-    
-    if(encoding == 'binary'){
-        options = {responseType :'arraybuffer'}
-    }
-    await axios.get(`http://localhost:${config.http.publishtoolsPort}/info`+path, options).then(response => {
-        content = response.data
-        if(encoding != 'binary')
-            content = await(rewriteRoles(content, info))
-    }).catch(error => {
-        if(error.response){
-            throw new Error("not ound")
+    if (!process.env.WIKI_FS){
+        
+        var options =  {}
+        
+        if(encoding == 'binary'){
+            options = {responseType :'arraybuffer'}
         }
-    });
-    return content
+        await axios.get(`http://localhost:${config.http.publishtoolsPort}/info`+httppath, options).then(response => {
+            content = response.data
+            if(encoding != 'binary')
+                content = await(rewriteRoles(content, info))
+        }).catch(error => {
+            if(error.response){
+                throw new Error("not ound")
+            }
+        });
+        return content
+    }else{
+        try{
+            driveObj = info.drive
+            entry = await driveObj.promises.stat(filepath)
+            var content = await  driveObj.promises.readFile(filepath, encoding, true);
+            if(encoding != 'binary')
+                content = await(rewriteRoles(content, info))
+            
+        }catch(e){
+            console.log(e)
+            if(e.response){
+                throw new Error("not ound")
+            }
+        }
+        console.log(content)
+        return content
+    }
 }
+    
 
 async function rewriteRoles(content, info){
     
@@ -255,12 +275,12 @@ async function handleWikiFile(req, res, info){
     var content = null
 
     try{
-        content =  await getContent(httppath, encoding, info)
+        content =  await getContent(filepath, httppath, encoding, info)
     }catch(e){
 
         httppath = filepath.replace('wiki_', '')
         try{
-            content =  await getContent(httppath, encoding, info)
+            content =  await getContent(filepath, httppath, encoding, info)
         }catch(e){
             console.log("could not find " + httppath)
         }
@@ -503,7 +523,7 @@ router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
     try {
         
         httppath = filepath.replace('wiki_', '')
-        content =  await getContent(httppath, 'utf-8', req.info)
+        content =  await getContent(filepath, httppath, 'utf-8', req.info)
         return res.send(content)
     } catch (e) {
         console.log(e)

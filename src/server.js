@@ -126,7 +126,7 @@ async function main(){
     })
 
 
-    const app = require('./http/app.js')
+    const app = require('./servers/http/app.js')
 
     if (!config.nodejs.production){
       var port = config.http.devport

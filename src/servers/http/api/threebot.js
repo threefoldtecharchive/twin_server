@@ -1,7 +1,7 @@
 var url = require('url');
 var express = require('express');
 var router = express.Router();
-var config = require('../../config')
+var config = require('../../../config')
 
 const asyncHandler = require('express-async-handler')
 

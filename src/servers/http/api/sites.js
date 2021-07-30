@@ -57,7 +57,7 @@ async function rewriteRoles(content, info){
     var mainDomains = info.domains
     var mainRepo  = info.repo
        
-    if (info.host == 'localhost' || info.host == '127.0.0.1'){
+    if (info.host == 'localhost' || info.host == '127.0.0.1' || host.endsWith('gitpod.io')){
         for(var item in config.info.domains){
             var site = config.info.domains[item]
             var isWebsite = site.isWebSite

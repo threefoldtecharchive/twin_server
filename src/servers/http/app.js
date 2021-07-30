@@ -122,10 +122,11 @@ app.use(function (req, res, next) {
         next()
         return
     }
+    
 
 
     var info = null
-    if (host == 'localhost') {
+    if (host == 'localhost' || host.endsWith('gitpod.io')) {
         info = config.info.websites['aydo']
     } else {
         info = config.info.domains[host]
@@ -147,7 +148,7 @@ app.use(function (req, res, next) {
         var splitted = suburl.split("/")
         alias = splitted[0]
 
-        if (host == 'localhost') {
+        if (host == 'localhost' || host.endsWith('gitpod.io')) {
             info = config.info.websites['aydo']
         } else {
             info = config.info.domains[host]

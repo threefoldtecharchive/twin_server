@@ -1,13 +1,21 @@
-set -e
-cd wiki
-mkdir -p /appdata/user
-mkdir -p /appdata/chat
-mkdir -p /appdata/chats 
+# # set -e
+
+[ ! -d "node_modules" ] &&  npm install
+
+pushd wiki
+sudo mkdir -p /appdata/user
+sudo mkdir -p /appdata/chat
+sudo mkdir -p /appdata/chats 
+sudo chown -R gitpod:gitpod /appdata
 
 publishtools install
 publishtools staticfiles update
 publishtools build
 publishtools flatten
+popd
 
-cd ../src
+pushd src
+
 WIKI_FS=true node server.js
+
+popd

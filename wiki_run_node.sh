@@ -1,6 +1,8 @@
 # # set -e
 
+pushd src
 [ ! -d "node_modules" ] &&  npm install
+popd 
 
 pushd wiki
 sudo mkdir -p /appdata/user

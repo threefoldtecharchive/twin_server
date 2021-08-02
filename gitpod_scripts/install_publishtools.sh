@@ -38,6 +38,3 @@ else
     bash build_fast.sh
     popd  "$@" > /dev/null 
 fi
-publishtools develop
-
-

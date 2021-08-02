@@ -1,8 +1,7 @@
 image:
   file: .gitpod.Dockerfile
 tasks:
-  - init: bash ct_scripts/build_fast.sh
-  - command: bash wiki_run_node.sh
+  - command: bash ct_scripts/build_fast.sh && bash wiki_run_node.sh
 # # Commands to start on workspace startup
 # tasks:
     # - init: bash /workspace/www_threefold_io/gitpod/install.sh

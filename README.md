@@ -11,7 +11,7 @@ Digitaltinw provides
     - publish wikis and websites from `~/.publisher/publish` directory
 - Filebrowser, chatting, digital avatar 
     - Backend [digitaltwin-lib](https://github.com/threefoldtech/digitaltwin-lib) installed as a dependency
-    - Frontend [www_threefold_twin](https://github.com/threefoldfoundation/www_threefold_twin) built and installed using publishtools as indicated below
+    - Frontend [twin_aydo](https://github.com/threefoldtech/twin_aydo) built and installed using publishtools as indicated below
  
 ## Installation
 - Install [publishtools](https://info.threefold.io/info/publishtools#/publishtools__install)

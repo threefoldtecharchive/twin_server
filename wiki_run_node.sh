@@ -7,7 +7,7 @@ popd
 pushd wiki
 sudo mkdir -p /appdata/user
 sudo mkdir -p /appdata/chat
-sudo mkdir -p /appdata/chats 
+sudo mkdir -p /appdata/chats
 sudo chown -R gitpod:gitpod /appdata
 
 publishtools install

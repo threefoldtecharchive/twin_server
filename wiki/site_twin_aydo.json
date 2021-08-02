@@ -10,7 +10,7 @@
     "groups": [],
     "acl":  [{
         "groups":       [],
-        "users":        ["myth", "kristof", "samir1", "ahmedthabet"],
+        "users":        ["myth", "kristof", "samir1", "ahmedthabet", "essam", "omar0", "rafybenjamin"],
         "rights":       "R",
         "secrets":      []
     }],

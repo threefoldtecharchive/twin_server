@@ -18,7 +18,7 @@ popd
 
 pushd src
 
-[ -d "~/.publisher/static/cookie-consent.js" ] && sed -i 's/(\\\\#\[-a-z\\\\d_\]\*)/(\\\\#\[\/-a-z\\\\d_\]\*)/g' ~/.publisher/static/cookie-consent.js
+[ ! -d "~/.publisher/static/cookie-consent.js" ] && sed -i 's/(\\\\#\[-a-z\\\\d_\]\*)/(\\\\#\[\/-a-z\\\\d_\]\*)/g' ~/.publisher/static/cookie-consent.js
 
 WIKI_FS=true node server.js
 

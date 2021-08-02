@@ -15,11 +15,11 @@ Digitaltinw provides
  
 ## Installation
 - Install [publishtools](https://info.threefold.io/info/publishtools#/publishtools__install)
-- we need to run `publishtools` command from a directory containing a config file `sites.json`. if you don't have this config file create a new one with the following content ([The digitaltwin frontend](https://github.com/threefoldfoundation/www_threefold_twin))
+- we need to run `publishtools` command from a directory containing a config file `sites.json`. if you don't have this config file create a new one with the following content ([The digitaltwin frontend](https://github.com/threefoldtech/twin_aydo))
     ```
     [{
-                    "name": "www_threefold_twin",
-                    "url":  "https://github.com/threefoldfoundation/www_threefold_twin",
+                    "name": "twin_aydo",
+                    "url":  "https://github.com/threefoldtech/twin_aydo",
                     "branch":       "",
                     "pull": false,
                     "reset":        false,

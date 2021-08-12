@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "/home/gitpod/.vmodules/despiegk/crystallib"
+		},
+		{
+			"path": "../code/github/threefoldfoundation"
 		}
 	],
 	"settings": {}

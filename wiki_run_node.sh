@@ -10,7 +10,7 @@ sudo mkdir -p /appdata/chat
 sudo mkdir -p /appdata/chats
 sudo chown -R gitpod:gitpod /appdata
 
-publishtools install
+# publishtools install
 publishtools staticfiles update
 publishtools build
 publishtools flatten

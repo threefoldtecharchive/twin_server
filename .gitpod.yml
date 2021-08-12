@@ -16,13 +16,10 @@ ports:
 vscode:
   extensions:
     - vlanguage.vscode-vlang
-    - telesoho.vscode-markdown-paste-image
     - yzhang.markdown-all-in-one
     - shd101wyy.markdown-preview-enhanced
     - bierner.markdown-mermaid
-    - darkriszty.markdown-table-prettify
     - bpruitt-goddard.mermaid-markdown-syntax-highlighting
-    - shuworks.vscode-table-formatter
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)

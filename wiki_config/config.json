@@ -10,5 +10,6 @@
         "code": "/workspace/code",
         "codewiki": "",
         "publish": ""
-    }
+    },
+    "publish_servers": ["161.35.109.242"]
 }

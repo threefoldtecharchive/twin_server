@@ -4,7 +4,7 @@ pushd src
 [ ! -d "node_modules" ] &&  npm install
 popd 
 
-pushd wiki
+pushd wiki_config
 sudo mkdir -p /appdata/user
 sudo mkdir -p /appdata/chat
 sudo mkdir -p /appdata/chats

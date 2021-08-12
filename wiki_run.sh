@@ -1,3 +1,3 @@
-cd wiki
+cd wiki_config
 ./run.sh
 

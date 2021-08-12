@@ -7,7 +7,7 @@ tasks:
         bash /tmp/install.sh
         source /workspace/env.sh
         node_install
-        bash wiki_run_node
+        bash wiki_run_node.sh
 ports:
   - port: 9998
     onOpen: open-browser

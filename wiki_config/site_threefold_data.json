@@ -1,7 +1,7 @@
 {
     "name": "threefold_data",
     "git_url":  "https://github.com/threefoldfoundation/threefold_data/tree/development",
-   "pull": false,
+    "pull": false,
     "reset":        false,
     "cat":  1,
     "domains":      [],

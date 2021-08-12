@@ -1,8 +1,9 @@
 set -e
 
 #you can comment this and then its only the pre-build version
-bash ../ct_scripts/build_fast.sh
+publtools_build
 
-publishtools develop
+publishtools flatten
+# publishtools develop
 
 

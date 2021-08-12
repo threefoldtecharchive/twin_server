@@ -1,6 +1,6 @@
 {
 	"name": "legal",
-	"git_url": "git@github.com:threefoldfoundation/info_legal/tree/development/src",
+	"git_url": "git@github.com:threefoldfoundation/info_legal/tree/development/wiki",
 	"pull": false,
 	"reset": false,
 	"cat": 0,

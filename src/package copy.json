@@ -1,0 +1,51 @@
+{
+  "name": "digitaltwin",
+  "version": "1.0.0",
+  "main": "server.js",
+  "description": "Digital Twin",
+  "author": "",
+  "license": "ISC",
+  "bin": "server.js",
+  "dependencies": {
+    "@threefoldjimber/digitaltwin-backend": "^1.0.6",
+    "@threefoldjimber/threefold_login": "^1.4.0",
+    "chalk": "^4.1.0",
+    "cors": "^2.8.5",
+    "dns2": "^1.4.2",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "express-fileupload": "^1.2.1",
+    "express-session": "^1.17.1",
+    "greenlock-express": "^4.0.3",
+    "hyperdrive": "^10.19.1",
+    "hyperspace": "^3.18.1",
+    "morgan": "^1.10.0",
+    "mustache-express": "^1.3.0",
+    "node-sass": "^5.0.0",
+    "nodemon": "^2.0.7",
+    "pump": "^3.0.0",
+    "rotating-file-stream": "^2.1.5",
+    "sodium-native": "^3.2.1",
+    "sucrase": "^3.17.0",
+    "winston": "^3.3.3"
+  },
+  "pkg": {
+    "assets": [
+      "sodium.node",
+      "fdlock.node",
+      "utp.node",
+      "node.napi.glibc.node",
+      "node.napi.musl.node",
+      "libsodium.so.23",
+      "node_modules/sodium-native/prebuilds/linux-x64/*",
+      "node_modules/leveldown/prebuilds/linux-x64/*",
+      "node_modules/utp-native/prebuilds/linux-x64/*",
+      "node_modules/fd-lock/prebuilds/linux-x64/*",
+      "node_modules/sodium-native/prebuilds/darwin-x64/*",
+      "node_modules/leveldown/prebuilds/darwin-x64/*",
+      "node_modules/utp-native/prebuilds/darwin-x64/*",
+      "node_modules/fd-lock/prebuilds/darwin-x64/*"
+    ]
+  },
+  "devDependencies": {}
+}

@@ -1,5 +1,7 @@
 image:
   file: .gitpod.Dockerfile
+tasks:
+  - command: bash gitpod_scripts/install_publishtools.sh && bash wiki_run_node.sh
 # # Commands to start on workspace startup
 # tasks:
     # - init: bash /workspace/www_threefold_io/gitpod/install.sh

@@ -1,0 +1,30 @@
+[
+    {
+        "name": "agroup",
+        "members_users": [
+            "user1",
+            "user2"
+        ],
+        "members_groups": [
+            "group1",
+            "group2"
+        ]
+    },
+    {
+        "name": "group1",
+        "members_users": [
+            
+        ],
+        "members_groups": [
+            "group2"
+        ]
+    },
+
+    {
+        "name": "group2",
+        "members_users": [
+            "user3"
+        ],
+        "members_groups": []
+    }
+]

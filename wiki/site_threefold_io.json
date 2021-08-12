@@ -1,0 +1,13 @@
+{
+    "name": "threefold_io",
+    "prefix": "threefold",
+    "git_url":  "https://github.com/threefoldfoundation/www_threefold_io/tree/development",
+    "pull": false,
+    "reset":        false,
+    "cat":  2,
+    "domains":      ["www.threefold.io", "www.threefold.me", "threefold.me", "new.threefold.io", "staging.threefold.io", "threefold.io"],
+    "descr":        "is our entry point for everyone, redirect to the detailed websites underneith.",
+    "groups":       [],
+    "acl":  [],
+    "trackingid":   ""
+}

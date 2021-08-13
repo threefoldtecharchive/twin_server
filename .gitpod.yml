@@ -7,6 +7,7 @@ tasks:
         bash /tmp/install.sh
         source /workspace/env.sh
         node_install
+        yarn global add @gridsome/cli
         bash wiki_run_node.sh
 ports:
   - port: 9998

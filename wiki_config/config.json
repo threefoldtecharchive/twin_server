@@ -7,7 +7,7 @@
     "multibranch":true,
     "paths": {
         "base": "",
-        "code": "/workspace/code",
+        "code": "",
         "codewiki": "",
         "publish": ""
     },

@@ -5,10 +5,10 @@ tasks:
       command: |
         curl https://raw.githubusercontent.com/crystaluniverse/crystaltools/development/install.sh > /tmp/install.sh
         bash /tmp/install.sh
-        source /workspace/env.sh
-        node_install
-        sudo npm install --global @gridsome/cli
-        bash wiki_run_node.sh
+        # source /workspace/env.sh
+        # node_install
+        # sudo npm install --global @gridsome/cli
+        # bash wiki_run_node.sh
 ports:
   - port: 9998
     onOpen: open-browser

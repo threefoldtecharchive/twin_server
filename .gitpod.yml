@@ -8,7 +8,7 @@ tasks:
         source /workspace/env.sh
         node_install
         sudo npm install --global @gridsome/cli
-        bash wiki_run_node.sh
+        bash wiki_flatten.sh
 ports:
   - port: 9998
     onOpen: open-browser

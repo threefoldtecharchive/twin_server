@@ -18,14 +18,14 @@ pushd wiki_config
 publishtools install
 publishtools staticfiles update
 publishtools flatten
-publishtools build
+# publishtools build
 popd
 
-pushd src
+# pushd src
 
-[ ! -d "$DIR_BASE/static/cookie-consent.js" ] && sed -i 's/(\\\\#\[-a-z\\\\d_\]\*)/(\\\\#\[\/-a-z\\\\d_\]\*)/g' $DIR_BASE//static/cookie-consent.js
+# [ ! -d "$DIR_BASE/static/cookie-consent.js" ] && sed -i 's/(\\\\#\[-a-z\\\\d_\]\*)/(\\\\#\[\/-a-z\\\\d_\]\*)/g' $DIR_BASE//static/cookie-consent.js
 
-echo " - *** RUN SERVER ***"
-WIKI_FS=true node server.js
+# echo " - *** RUN SERVER ***"
+# WIKI_FS=true node server.js
 
-popd
+# popd

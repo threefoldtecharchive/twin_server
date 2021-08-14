@@ -1,4 +1,4 @@
-set -e
+set -ex
 
 pushd src
 echo " - *** NPM INSTALL ***"

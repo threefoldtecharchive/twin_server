@@ -17,8 +17,8 @@ echo " - *** PUBLISHTOOLS PREPARE ***"
 pushd wiki_config
 publishtools install
 publishtools staticfiles update
-publishtools build
 publishtools flatten
+# publishtools build
 popd
 
 pushd src

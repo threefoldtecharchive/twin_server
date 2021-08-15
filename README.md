@@ -1,5 +1,8 @@
 # Digitaltwin
 
+
+- [PLANNING/FR/BUG see here](https://circles.threefold.me/project/despiegk-product_publisher/issues)
+
 Digitaltinw provides
     - your own digital avatar (identity server)
     - private file browser

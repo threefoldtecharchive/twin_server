@@ -20,7 +20,7 @@
     },
 
     "publishtools" : {
-        "root" : "~/.publisher/publish/"
+        "root" : "/workspace/publisher/publish/"
     },
 
     "threebot": {

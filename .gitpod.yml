@@ -3,11 +3,15 @@ image:
 tasks:
     - name: WIKI
       command: |
+        echo "----------- 1.Install crystaltools -----------"
         curl https://raw.githubusercontent.com/crystaluniverse/crystaltools/development/install.sh > /tmp/install.sh
         bash /tmp/install.sh
         source /workspace/env.sh
+        echo "----------- 2.Install Node -----------"
         node_install
+        echo "----------- 3.NPM Install gridsome -----------"
         sudo npm install --global @gridsome/cli
+        echo "----------- 4.Run wiki_flatten script -----------"
         bash wiki_flatten.sh
 ports:
   - port: 9998

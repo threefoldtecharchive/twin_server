@@ -15,8 +15,11 @@ sudo chown -R gitpod:gitpod /appdata
 #PUBLISHTOOLS PART
 echo " - *** PUBLISHTOOLS PREPARE ***"
 pushd wiki_config
+echo " - **** PUBLISHTOOLS INSTALL ****"
 publishtools install
+echo " - **** PUBLISHTOOLS STATICFILES UPDATE ****"
 publishtools staticfiles update
+echo " - **** PUBLISHTOOLS FLATTEN ****"
 publishtools flatten
 # publishtools build
 popd

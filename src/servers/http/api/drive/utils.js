@@ -69,8 +69,8 @@ async function process(drive, dir){
     var dirs = await drive.promises.readdir(p)
     var groupObj = await groups.load(sitegroups)
     // ignore wiki dirs (coming from publishtools now)
-    dirs = dirs.filter((item) => {if(!item.startsWith(".") && !item.startsWith("wiki")){return item}}).sort()
-    
+    dirs = dirs.filter((item) => {if(!item.includes(".") && !item.startsWith("wiki")){return item}}).sort()
+
     // process sites
     for(var i=0; i < dirs.length; i++){
         if(! (dirs[i] in sitesConfig)){

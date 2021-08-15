@@ -11,7 +11,9 @@ tasks:
         node_install
         echo "----------- 3.NPM Install gridsome -----------"
         sudo npm install --global @gridsome/cli
-        echo "----------- 4.Run wiki_flatten script -----------"
+        echo "----------- 4.Copy configuration files in publish/config -----------"
+        cp /workspace/twin_server/wiki_config/* /workspace/publisher/config
+        echo "----------- 5.Run wiki_flatten script -----------"
         bash wiki_flatten.sh
 ports:
   - port: 9998

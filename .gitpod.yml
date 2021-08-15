@@ -12,6 +12,7 @@ tasks:
         echo "----------- 3.NPM Install gridsome -----------"
         sudo npm install --global @gridsome/cli
         echo "----------- 4.Copy configuration files in publish/config -----------"
+        mkdir -p /workspace/publisher/config
         cp /workspace/twin_server/wiki_config/* /workspace/publisher/config
         echo "----------- 5.Run wiki_flatten script -----------"
         bash wiki_flatten.sh

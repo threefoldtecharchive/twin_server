@@ -38,7 +38,7 @@ export const requestInfoMiddleware =  (req, res, next) => {
     } else {
         info = config.info.domains[host]
         if (!info) {
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
     }
     // @todo: replace with proper redirection in config
@@ -81,7 +81,7 @@ export const requestInfoMiddleware =  (req, res, next) => {
         }
 
         if (!info) {
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
 
 
@@ -116,7 +116,7 @@ export const requestInfoMiddleware =  (req, res, next) => {
     }
 
     if (!info) {
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
     req.info = info
     req.info.host = host
@@ -138,7 +138,7 @@ export const loginMiddleware = (req, res, next) => {
     var threebotConnect = false
 
     if (!info.acls) {
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 
     if (Object.keys(info.acls.secrets).length !== 0) {

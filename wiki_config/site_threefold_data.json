@@ -4,7 +4,7 @@
     "pull": false,
     "reset":        false,
     "cat":  1,
-    "domains":      [],
+    "domains":        [],
     "descr":        "Teams, Partners, Blog, News",
     "groups":       [],
     "acl":  [],

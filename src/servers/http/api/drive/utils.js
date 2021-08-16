@@ -100,7 +100,8 @@ async function process(drive, dir){
             console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignoring path: ${dir} duplicated alias`))
             continue
         }
-        
+        console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+        console.log(siteInfo)
         var acls = await groupObj.parseAcl(siteinfo.acl)
         var val = {
             "drive": drive,
@@ -125,6 +126,9 @@ async function process(drive, dir){
         if(siteinfo.cat == 0){
             var dir = path.join(p,  `wiki_${siteinfo.name}`)
             var alias = siteinfo.name
+
+            console.log("ccccccccccccccccccccccccccccccccccccccccccccccccccccccc")
+            console.log(siteinfo)
             var acls = await groupObj.parseAcl(siteinfo.acl)
             var val = {
                 "drive": drive,

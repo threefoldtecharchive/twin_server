@@ -190,7 +190,7 @@ async function handleWebsiteFile(req, res, info){
     } catch (e) {
         logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
         // return res.status(404).send(`File not found : ${filepath}`);
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 }
 
@@ -265,7 +265,7 @@ async function handleWikiFile(req, res, info){
 
     if(!driveObj){
         // return res.status(404).send(`Wiki not found`)
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 
     // `/${req.params.wikiname}/${req.params.filename}`
@@ -291,7 +291,7 @@ async function handleWikiFile(req, res, info){
         
         return res.send(content)
     }
-    return res.status(404).render('sites/404.mustache')
+    console.trace();return res.status(404).render('sites/404.mustache')
 }
 
 router.get('/login', asyncHandler(async (req, res) =>  {
@@ -382,7 +382,7 @@ router.get('/', asyncHandler(async (req, res) =>  {
      } catch (e) {
             logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
             // return res.status(404).send(`Site not found : ${info.alias}`);
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
      }    
 }))
 
@@ -454,7 +454,7 @@ router.get('/:path', asyncHandler(async (req, res) =>  {
         } catch (e) {
             logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
             // return res.status(404).send(`File not found : ${filepath}`);
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
     // static file for wikis or wiki file
     }else{
@@ -480,7 +480,7 @@ router.get('/:path', asyncHandler(async (req, res) =>  {
             } catch (e) {
                 logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
                 // return res.status(404).send(`File not found : ${filepath}`);
-                return res.status(404).render('sites/404.mustache')
+                console.trace();return res.status(404).render('sites/404.mustache')
             }
         }else{
             return handleWikiFile(req, res, info)
@@ -494,6 +494,7 @@ router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
     contenttype = 'utf8'
     var dir = req.info.dir
     var driveObj = req.info.drive
+    console.log("filepath: " + filepath + ", name: " + name)
     if (name.endsWith("js") || name.endsWith("css")){   
         if (name.endsWith('js'))
             res.type("text/javascript")
@@ -511,7 +512,7 @@ router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
         } catch (e) {
             logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
             // return res.status(404).send(`File not found : ${filepath}`);
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
 
     }else{
@@ -528,7 +529,7 @@ router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
         console.log(e)
         logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
         // return res.status(404).send(`File not found : ${filepath}`);
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 }))
 
@@ -552,7 +553,7 @@ router.get('/:website/flexsearch', asyncHandler(async (req, res) => {
     } catch (e) {
         logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
         // return res.status(404).send(`File not found : ${filepath}`);
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 }))
 
@@ -587,7 +588,7 @@ router.get('/info/:wiki/errors', asyncHandler(async (req, res) => {
     } catch (e) {
         logger.error(`${req.method} - ${e.message}  - ${req.originalUrl} - ${req.ip}`);
         // return res.status(404).send(`File not found : ${filepath}`);
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 }))
 

@@ -131,7 +131,7 @@ app.use(function (req, res, next) {
     } else {
         info = config.info.domains[host]
         if (!info) {
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
     }
     // @todo: replace with proper redirection in config
@@ -174,12 +174,16 @@ app.use(function (req, res, next) {
         }
 
         if (!info) {
-            return res.status(404).render('sites/404.mustache')
+            console.trace();return res.status(404).render('sites/404.mustache')
         }
 
 
     } else if (req.url != '/') {
         var found = false
+        console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        console.log(req.url)
+        console.log(config.info.websites)
+        console.log(config.info)
         for (var alias in config.info.websites) {
             if (req.url == `/${alias}` || req.url.startsWith(`/${alias}/`)) {
                 info = config.info.websites[alias]
@@ -203,19 +207,23 @@ app.use(function (req, res, next) {
 
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
-            info = Object.assign({}, info)
+            console.log("NOT FOUND")
+            info = config.info.wikis['legal']
+            // info = Object.assign({}, info)
             info.subPath = true
         }
     }
-
     if (!info) {
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
+    console.log("dddddddddddddddddddddddddddddddddddd")
+    console.log(info)
     req.info = info
     req.info.host = host
     req.info.port = port
     req.info.secure = req.secure
     req.info.url = req.url
+    // req.info.acls = {"secrets": {}, "users": {}}
     next()
     return
 })
@@ -229,9 +237,12 @@ app.use((req, res, next) => {
 
     var requirePassword = false
     var threebotConnect = false
-
+    console.log("acls: ")
+    console.log(info.acls)
+    console.log("info year: ")
+    console.log(info)
     if (!info.acls) {
-        return res.status(404).render('sites/404.mustache')
+        console.trace();return res.status(404).render('sites/404.mustache')
     }
 
     if (Object.keys(info.acls.secrets).length !== 0) {

@@ -11,7 +11,14 @@
 	],
 	"descr": "",
 	"groups": [],
-	"acl": [],
+	"acl": [
+		{
+			"groups": [],
+			"users": ["omar0", "ahmedthabet"],
+			"rights": "R",
+			"secrets": []
+		}
+	],
 	"trackingid": "17",
 	"opengraph": {
 		"title": "",

@@ -127,11 +127,27 @@ app.use(function (req, res, next) {
 
     var info = null
     if (host == 'localhost' || host.endsWith('gitpod.io')) {
-        info = config.info.websites['aydo']
+        // get the first website that exists?
+        req.isLocal = true
+        let theDefault = false
+        if (config.info.websites.length >0){
+            for (p in config.info.websites){
+                theDefault = config.info.websites[p]
+                break
+            }
+        }else{
+            // sentined check for wikis
+            for (p in config.info.wikis){
+                theDefault = config.info.wikis[p]
+                break
+            }   
+        }
+        req.defaultInfo = theDefault
+        info = config.info.websites['aydo'] || req.defaultInfo
     } else {
         info = config.info.domains[host]
         if (!info) {
-            console.trace();return res.status(404).render('sites/404.mustache')
+            return res.status(404).render('sites/404.mustache')
         }
     }
     // @todo: replace with proper redirection in config
@@ -149,7 +165,8 @@ app.use(function (req, res, next) {
         alias = splitted[0]
 
         if (host == 'localhost' || host.endsWith('gitpod.io')) {
-            info = config.info.websites['aydo']
+            req.isLocal = true
+            info = config.info.websites['aydo'] || req.defaultInfo
         } else {
             info = config.info.domains[host]
         }
@@ -174,7 +191,7 @@ app.use(function (req, res, next) {
         }
 
         if (!info) {
-            console.trace();return res.status(404).render('sites/404.mustache')
+            return res.status(404).render('sites/404.mustache')
         }
 
 
@@ -214,10 +231,9 @@ app.use(function (req, res, next) {
         }
     }
     if (!info) {
-        console.trace();return res.status(404).render('sites/404.mustache')
+        return res.status(404).render('sites/404.mustache')
     }
-    console.log("dddddddddddddddddddddddddddddddddddd")
-    console.log(info)
+    // console.log(info)
     req.info = info
     req.info.host = host
     req.info.port = port
@@ -242,16 +258,16 @@ app.use((req, res, next) => {
     console.log("info year: ")
     console.log(info)
     if (!info.acls) {
-        console.trace();return res.status(404).render('sites/404.mustache')
+        return res.status(404).render('sites/404.mustache')
     }
 
-    if (Object.keys(info.acls.secrets).length !== 0) {
+    if (info.acls.secrets && (Object.keys(info.acls.secrets).length !== 0) ) {
         requirePassword = true
         req.session.requirePassword = true
         req.session.save()
     }
 
-    if (Object.keys(info.acls.users).length !== 0) {
+    if (info.acls.users &&  (Object.keys(info.acls.users).length !== 0)) {
         threebotConnect = true
         req.session.threebotConnect = true
 

@@ -1,4 +1,4 @@
-{
+in{
 	"name": "legal",
 	"git_url": "https://github.com/threefoldfoundation/info_legal/tree/development/wiki",
 	"pull": false,
@@ -11,14 +11,7 @@
 	],
 	"descr": "",
 	"groups": [],
-	"acl": [
-		{
-			"groups": [],
-			"users": ["omar0", "ahmedthabet"],
-			"rights": "R",
-			"secrets": []
-		}
-	],
+	"acl": [],
 	"trackingid": "17",
 	"opengraph": {
 		"title": "",

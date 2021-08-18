@@ -126,23 +126,23 @@ app.use(function (req, res, next) {
 
 
     var info = null
+    let theDefault = false
+    if (config.info.websites.length >0){
+        for (p in config.info.websites){
+            theDefault = config.info.websites[p]
+            break
+        }
+    }else{
+        // sentined check for wikis
+        for (p in config.info.wikis){
+            theDefault = config.info.wikis[p]
+            break
+        }   
+    }
+    req.defaultInfo = theDefault
     if (host == 'localhost' || host.endsWith('gitpod.io')) {
         // get the first website that exists?
         req.isLocal = true
-        let theDefault = false
-        if (config.info.websites.length >0){
-            for (p in config.info.websites){
-                theDefault = config.info.websites[p]
-                break
-            }
-        }else{
-            // sentined check for wikis
-            for (p in config.info.wikis){
-                theDefault = config.info.wikis[p]
-                break
-            }   
-        }
-        req.defaultInfo = theDefault
         info = config.info.websites['aydo'] || req.defaultInfo
     } else {
         info = config.info.domains[host]

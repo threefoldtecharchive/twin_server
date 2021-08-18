@@ -144,8 +144,12 @@ app.use(function (req, res, next) {
         // get the first website that exists?
         req.isLocal = true
         info = config.info.websites['aydo'] || req.defaultInfo
+        console.info("Info from localhost/gitpod")
+        console.log(info)
     } else {
         info = config.info.domains[host]
+        console.info("Info from domain")
+        console.log(info)
         if (!info) {
             return res.status(404).render('sites/404.mustache')
         }
@@ -197,10 +201,8 @@ app.use(function (req, res, next) {
 
     } else if (req.url != '/') {
         var found = false
-        console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        console.log("-------- WITHOUT LOGIN --------")
         console.log(req.url)
-        console.log(config.info.websites)
-        console.log(config.info)
         for (var alias in config.info.websites) {
             if (req.url == `/${alias}` || req.url.startsWith(`/${alias}/`)) {
                 info = config.info.websites[alias]
@@ -224,8 +226,9 @@ app.use(function (req, res, next) {
 
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
-            console.log("NOT FOUND")
-            info = config.info.wikis['legal'] || req.defaultInfo
+            console.log("NOT FOUND, info and use default")
+            info = req.defaultInfo
+            console.log(info)
             // info = Object.assign({}, info)
             info.subPath = true
         }

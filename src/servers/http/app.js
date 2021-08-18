@@ -226,9 +226,16 @@ app.use(function (req, res, next) {
 
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
+            for (let w in [...config.info.websites, ...config.info.wikis]) {
+                if (w.domains.includes(host)){
+                    found = true
+                    info = w
+                }
+            }
             console.log("NOT FOUND, info and use default")
-            info = req.defaultInfo
+            // info = req.defaultInfo
             console.log(info)
+            
             // info = Object.assign({}, info)
             info.subPath = true
         }

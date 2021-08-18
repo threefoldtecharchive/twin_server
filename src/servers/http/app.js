@@ -127,14 +127,13 @@ app.use(function (req, res, next) {
 
     var info = null
     let theDefault = false
-    if (config.info.websites.length >0){
-        for (p in config.info.websites){
-            theDefault = config.info.websites[p]
-            break
-        }
-    }else{
-        // sentined check for wikis
-        for (p in config.info.wikis){
+    for (let p in config.info.websites){
+        theDefault = config.info.websites[p]
+        break
+    }
+    // sentined check for wikis
+    if (!theDefault){
+        for (let p in config.info.wikis){
             theDefault = config.info.wikis[p]
             break
         }   
@@ -226,7 +225,8 @@ app.use(function (req, res, next) {
 
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
-            for (let w in [...config.info.websites, ...config.info.wikis]) {
+            let allObjects = Object.assign({}, config.info.websites, config.info.wikis)
+            for (let w in allObjects) {
                 if (w.domains.includes(host)){
                     found = true
                     info = w

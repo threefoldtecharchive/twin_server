@@ -227,7 +227,7 @@ app.use(function (req, res, next) {
         if (!found) {
             let allObjects = Object.assign({}, config.info.websites, config.info.wikis)
             for (let w in allObjects) {
-                if (w.domains.includes(host)){
+                if (w && w.domains && w.domains.includes(host)){
                     found = true
                     info = w
                 }

@@ -7,7 +7,7 @@ const systemprocess = require('process')
 async function process(drive, dir){
     var p = path.join("/", dir)
 
-    var configdirpath = path.join("..", p, 'config')
+    var configdirpath = p
     
     try{
         await drive.promises.stat(configdirpath)
@@ -27,7 +27,7 @@ async function process(drive, dir){
         for(var i=0; i <  files.length; i++){
             filename = files[i]
             var configfilepath =  path.join(configdirpath, filename)
-            if(filename.startsWith("site_")){
+            if(filename.startsWith("config_")){
                 var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
                 var item = JSON.parse(data)
                 var url = item.git_url.split("/")

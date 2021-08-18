@@ -225,7 +225,7 @@ app.use(function (req, res, next) {
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
             console.log("NOT FOUND")
-            info = config.info.wikis['legal']
+            info = config.info.wikis['legal'] || req.defaultInfo
             // info = Object.assign({}, info)
             info.subPath = true
         }

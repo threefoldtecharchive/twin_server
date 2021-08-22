@@ -143,12 +143,9 @@ app.use(function (req, res, next) {
         // get the first website that exists?
         req.isLocal = true
         info = config.info.websites['aydo'] || req.defaultInfo
-        console.info("Info from localhost/gitpod")
-        console.log(info)
     } else {
         info = config.info.domains[host]
         console.info("Info from domain")
-        console.log(info)
         if (!info) {
             return res.status(404).render('sites/404.mustache')
         }
@@ -200,7 +197,6 @@ app.use(function (req, res, next) {
 
     } else if (req.url != '/') {
         var found = false
-        console.log("-------- WITHOUT LOGIN --------")
         console.log(req.url)
         for (var alias in config.info.websites) {
             if (req.url == `/${alias}` || req.url.startsWith(`/${alias}/`)) {
@@ -232,10 +228,7 @@ app.use(function (req, res, next) {
                     info = w
                 }
             }
-            console.log("NOT FOUND, info and use default")
             // info = req.defaultInfo
-            console.log(info)
-            
             // info = Object.assign({}, info)
             info.subPath = true
         }
@@ -263,10 +256,6 @@ app.use((req, res, next) => {
 
     var requirePassword = false
     var threebotConnect = false
-    console.log("acls: ")
-    console.log(info.acls)
-    console.log("info year: ")
-    console.log(info)
     if (!info.acls) {
         return res.status(404).render('sites/404.mustache')
     }

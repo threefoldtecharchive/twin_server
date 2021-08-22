@@ -55,8 +55,6 @@ class Groups{
         }
 
         this.parseAcl = async function (aclData) {
-            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            console.log(aclData)
             var acls  = {"secrets": {}, "users": {}}
             var users = {}
             for(var i=0; i < aclData.length; i++){

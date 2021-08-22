@@ -25,7 +25,7 @@ async function getContent(filepath, httppath, encoding, info){
                 content = await(rewriteRoles(content, info))
         }).catch(error => {
             if(error.response){
-                throw new Error("not ound")
+                throw new Error("not found")
             }
         });
         return content
@@ -296,7 +296,7 @@ async function handleWikiFile(req, res, info){
         
         return res.send(content)
     }else{
-        console.log("no content .....")
+        console.log("no content")
         return res.status(404).render('sites/404.mustache')
 
     }
@@ -614,7 +614,6 @@ router.get('/:website/update', asyncHandler(async (req, res) => {
 // wiki files
 router.get('/info/:wiki/*', asyncHandler(async (req, res) => {
     var info = req.info
-    console.log("hereee")
     return handleWikiFile(req, res, info)
 }))
 
@@ -661,6 +660,41 @@ router.post('/wikis', asyncHandler(async (req, res) => {
         console.log(`stdout: ${stdout}`);
     });
     console.log("Done adding wiki")
+    res.send('{"success": true}')
+}))
+
+router.post('/sites', asyncHandler(async (req, res) => {
+    data = req.body
+    console.log("SITE POST DATA::")
+    console.log(data)
+    try{
+        fs.mkdirSync('/tmp/publishtools');
+    }catch(e){
+        console.log("Mkdir Error:: ", e)
+    }
+    fs.writeFileSync('/tmp/publishtools/site_tmp.json', JSON.stringify(data, null, 2));
+    exec(`
+    . /workspace/env.sh;
+    cd /tmp/publishtools;
+    echo "### Publish tools install ###";
+    publishtools install;
+    echo "### Publish tools build ###";
+    publishtools build;
+    cd /workspace/twin_server/src;
+    echo "Restart Twin server";
+    PID=$(ps aux | grep "[n]ode server.js" | grep -v 'bash' | tr -s " " | cut -d" " -f2);
+    kill -SIGUSR1 $PID` , {shell: "/bin/bash"}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    console.log("Done adding site")
     res.send('{"success": true}')
 }))
 module.exports = router

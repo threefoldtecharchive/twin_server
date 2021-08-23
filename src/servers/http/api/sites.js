@@ -644,21 +644,28 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     echo "### Publish tools install ###";
     publishtools install;
     echo "### Publish tools flatten ###";
-    publishtools flatten;` , {shell: "/bin/bash"})
-
-    console.log("Reload Server Config")
-    await server.loadDomainsList();
+    publishtools flatten;` , {shell: "/bin/bash"}).then(
+        () => {
+            console.log("Reload Server Config")
+            await server.loadDomainsList();
+            console.log("Done adding wiki")
+            res.send('{"success": true}')
+        }
+    );
 
     addWiki.stdout.setEncoding('utf8');
     addWiki.stdout.on('data', function (data) {
         console.log(`- stdout: add new wiki: ${data}`)
     });
 
+    addWiki.stderr.on('data', function (data) {
+        console.log(`- stdout: add new wiki: ${data}`)
+    });
+
     addWiki.on('close', function (code) {
         console.log(`process exit code ${code}`);
     });
-    console.log("Done adding wiki")
-    res.send('{"success": true}')
+    
 }))
 
 router.post('/sites', asyncHandler(async (req, res) => {
@@ -676,20 +683,27 @@ router.post('/sites', asyncHandler(async (req, res) => {
     echo "### Publish tools install ###";
     publishtools install;
     echo "### Publish tools build ###";
-    publishtools build;` , {shell: "/bin/bash"})
-    
-    console.log("Reload Server Config")
-    await server.loadDomainsList();
+    echo "Website building, It may take a time ...";
+    publishtools build;` , {shell: "/bin/bash"}).then(
+        () => {
+            console.log("Reload Server Config")
+            await server.loadDomainsList();
+            console.log("Done adding site")
+            res.send('{"success": true}')
+        }
+    );
 
     addSite.stdout.setEncoding('utf8');
     addSite.stdout.on('data', function (data) {
         console.log(`- stdout: add new site: ${data}`)
     });
 
+    addSite.stderr.on('data', function (data) {
+        console.log(`- stderr: add new site: ${data}`)
+    });
+
     addSite.on('close', function (code) {
         console.log(`process exit code ${code}`);
     });
-    console.log("Website building, It may take a time ...")
-    res.send('{"success": true}')
 }))
 module.exports = router

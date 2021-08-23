@@ -166,5 +166,5 @@ async function main(){
       }
     }
   }
-
+module.exports = { loadDomainsList }
 main()

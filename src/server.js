@@ -35,8 +35,6 @@ async function init(){
 
       await config.load()
       await rewrite.load()
-
-      domainsList.push(...await localDrive.load())
       
       var cleanup = function () {}
 

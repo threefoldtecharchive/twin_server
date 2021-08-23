@@ -647,7 +647,7 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     publishtools flatten;` , {shell: "/bin/bash"}).then(
         () => {
             console.log("Reload Server Config")
-            await server.loadDomainsList();
+            server.loadDomainsList();
             console.log("Done adding wiki")
             res.send('{"success": true}')
         }
@@ -687,7 +687,7 @@ router.post('/sites', asyncHandler(async (req, res) => {
     publishtools build;` , {shell: "/bin/bash"}).then(
         () => {
             console.log("Reload Server Config")
-            await server.loadDomainsList();
+            server.loadDomainsList();
             console.log("Done adding site")
             res.send('{"success": true}')
         }

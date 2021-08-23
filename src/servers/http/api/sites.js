@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 const asyncHandler = require('express-async-handler')
 const config = require('../../../config')
+const server = require('../../../server')
 
 const logger = require('../../../logger')
 const path = require('path')
 var axios  = require('axios')
 var fs = require('fs');
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 async function getContent(filepath, httppath, encoding, info){
     console.log(`+++getting content for ${filepath} ${httppath}`)
@@ -632,32 +633,29 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     data = req.body
     console.log("WIKI POST DATA::")
     console.log(data)
-    try{
-        fs.mkdirSync('/tmp/publishtools');
-    }catch(e){
-        console.log("Mkdir Error:: ", e)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
     }
     fs.writeFileSync('/tmp/publishtools/site_wiki_tmp.json', JSON.stringify(data));
-    exec(`
+    var addWiki = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
     echo "### Publish tools install ###";
     publishtools install;
     echo "### Publish tools flatten ###";
-    publishtools flatten;
-    cd /workspace/twin_server/src;
-    echo "Restart Twin server";
-    PID=$(ps aux | grep "[n]ode server.js" | grep -v 'bash' | tr -s " " | cut -d" " -f2);
-    kill -SIGUSR1 $PID` , {shell: "/bin/bash"}, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
+    publishtools flatten;` , {shell: "/bin/bash"})
+
+    console.log("Reload Server Config")
+    await server.loadDomainsList();
+
+    addWiki.stdout.setEncoding('utf8');
+    addWiki.stdout.on('data', function (data) {
+        console.log(`- stdout: add new wiki: ${data}`)
+    });
+
+    addWiki.on('close', function (code) {
+        console.log(`process exit code ${code}`);
     });
     console.log("Done adding wiki")
     res.send('{"success": true}')
@@ -667,34 +665,31 @@ router.post('/sites', asyncHandler(async (req, res) => {
     data = req.body
     console.log("SITE POST DATA::")
     console.log(data)
-    try{
-        fs.mkdirSync('/tmp/publishtools');
-    }catch(e){
-        console.log("Mkdir Error:: ", e)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
     }
     fs.writeFileSync('/tmp/publishtools/site_tmp.json', JSON.stringify(data, null, 2));
-    exec(`
+    var addSite = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
     echo "### Publish tools install ###";
     publishtools install;
     echo "### Publish tools build ###";
-    publishtools build;
-    cd /workspace/twin_server/src;
-    echo "Restart Twin server";
-    PID=$(ps aux | grep "[n]ode server.js" | grep -v 'bash' | tr -s " " | cut -d" " -f2);
-    kill -SIGUSR1 $PID` , {shell: "/bin/bash"}, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
+    publishtools build;` , {shell: "/bin/bash"})
+    
+    console.log("Reload Server Config")
+    await server.loadDomainsList();
+
+    addSite.stdout.setEncoding('utf8');
+    addSite.stdout.on('data', function (data) {
+        console.log(`- stdout: add new site: ${data}`)
     });
-    console.log("Done adding site")
+
+    addSite.on('close', function (code) {
+        console.log(`process exit code ${code}`);
+    });
+    console.log("Website building, It may take a time ...")
     res.send('{"success": true}')
 }))
 module.exports = router

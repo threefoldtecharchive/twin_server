@@ -15,11 +15,23 @@ const http = require('http')
 
 var inited = false
 
+async function loadDomainsList(){
+  var domainsList = []
+  domainsList.push(...await localDrive.load())
+  var cleanup = function () {}
+
+  if(config.hyperdrive.enabled){
+    const {_, cleanup } = await hyperdrive.start();
+    domainsList.push(...await hyperdrive.load())
+  }
+  var info = await utils.reduce(domainsList)
+  config.info = info
+}
+
 async function init(){
     var old_config = Object.assign({}, config.info) 
 
     try{
-      var domainsList = []
 
       await config.load()
       await rewrite.load()
@@ -28,13 +40,7 @@ async function init(){
       
       var cleanup = function () {}
 
-      if(config.hyperdrive.enabled){
-        const {_, cleanup } = await hyperdrive.start();
-        domainsList.push(...await hyperdrive.load())
-      }
-      var info = await utils.reduce(domainsList)
-      
-      config.info = info
+      await loadDomainsList()
 
       // write new greenlock config
       await letsencrypt.process()

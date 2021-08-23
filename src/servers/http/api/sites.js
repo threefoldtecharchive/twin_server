@@ -657,7 +657,7 @@ router.post('/wikis', asyncHandler(async (req, res) => {
 
     addWiki.on('close', function (code) {
         console.log("Reload Server Config")
-        server.loadDomainsList();
+        server.init();
         console.log("Done adding wiki")
         res.send('{"success": true}')
         console.log(`process exit code ${code}`);
@@ -694,7 +694,7 @@ router.post('/sites', asyncHandler(async (req, res) => {
 
     addSite.on('close', function (code) {
         console.log("Reload Server Config")
-        server.loadDomainsList();
+        server.init();
         console.log("Done adding site")
         res.send('{"success": true}')
         console.log(`process exit code ${code}`);

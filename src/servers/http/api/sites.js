@@ -644,14 +644,7 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     echo "### Publish tools install ###";
     publishtools install;
     echo "### Publish tools flatten ###";
-    publishtools flatten;` , {shell: "/bin/bash"}).then(
-        () => {
-            console.log("Reload Server Config")
-            server.loadDomainsList();
-            console.log("Done adding wiki")
-            res.send('{"success": true}')
-        }
-    );
+    publishtools flatten;` , {shell: "/bin/bash"});
 
     addWiki.stdout.setEncoding('utf8');
     addWiki.stdout.on('data', function (data) {
@@ -663,6 +656,10 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     });
 
     addWiki.on('close', function (code) {
+        console.log("Reload Server Config")
+        server.loadDomainsList();
+        console.log("Done adding wiki")
+        res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });
     
@@ -684,14 +681,7 @@ router.post('/sites', asyncHandler(async (req, res) => {
     publishtools install;
     echo "### Publish tools build ###";
     echo "Website building, It may take a time ...";
-    publishtools build;` , {shell: "/bin/bash"}).then(
-        () => {
-            console.log("Reload Server Config")
-            server.loadDomainsList();
-            console.log("Done adding site")
-            res.send('{"success": true}')
-        }
-    );
+    publishtools build;` , {shell: "/bin/bash"});
 
     addSite.stdout.setEncoding('utf8');
     addSite.stdout.on('data', function (data) {
@@ -703,6 +693,10 @@ router.post('/sites', asyncHandler(async (req, res) => {
     });
 
     addSite.on('close', function (code) {
+        console.log("Reload Server Config")
+        server.loadDomainsList();
+        console.log("Done adding site")
+        res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });
 }))

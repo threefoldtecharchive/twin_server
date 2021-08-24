@@ -652,16 +652,18 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     });
 
     addWiki.stderr.on('data', function (data) {
-        console.log(`- stdout: add new wiki: ${data}`)
+        console.log(`- stderr: add new wiki: ${data}`)
     });
 
     addWiki.on('close', function (code) {
         // Delete tmp config file
         fs.unlinkSync(`${tmpDir}/site_wiki_tmp.json`)
+        if (code == 0) {
+            res.send('{"success": true}')
+            console.log(chalk.green('✓ Done adding wiki'))
+        }
         console.log("Reload Server Config")
         server.init();
-        console.log(chalk.green('✓ Done adding wiki'))
-        res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });
     
@@ -697,10 +699,12 @@ router.post('/sites', asyncHandler(async (req, res) => {
     addSite.on('close', function (code) {
         // Delete tmp config file
         fs.unlinkSync(`${tmpDir}/site_tmp.json`)
+        if (code == 0){
+            res.send('{"success": true}')
+            console.log(chalk.green('✓ Done adding site'))
+        }
         console.log("Reload Server Config")
         server.init();
-        console.log(chalk.green('✓ Done adding site'))
-        res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });
 }))

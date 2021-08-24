@@ -637,13 +637,13 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     if (!fs.existsSync(tmpDir)){
         fs.mkdirSync(tmpDir, { recursive: true });
     }
-    fs.writeFileSync('/tmp/publishtools/site_wiki_tmp.json', JSON.stringify(data));
+    fs.writeFileSync(`${tmpDir}/site_wiki_tmp.json`, JSON.stringify(data));
     var addWiki = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
-    echo "### Publish tools install ###";
+    echo "### Publishtools install ###";
     publishtools install;
-    echo "### Publish tools flatten ###";
+    echo "### Publishtools flatten ###";
     publishtools flatten;` , {shell: "/bin/bash"});
 
     addWiki.stdout.setEncoding('utf8');
@@ -656,9 +656,11 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     });
 
     addWiki.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_wiki_tmp.json`)
         console.log("Reload Server Config")
         server.init();
-        console.log("Done adding wiki")
+        console.log(chalk.green('✓ Done adding wiki'))
         res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });
@@ -673,14 +675,14 @@ router.post('/sites', asyncHandler(async (req, res) => {
     if (!fs.existsSync(tmpDir)){
         fs.mkdirSync(tmpDir, { recursive: true });
     }
-    fs.writeFileSync('/tmp/publishtools/site_tmp.json', JSON.stringify(data, null, 2));
+    fs.writeFileSync(`${tmpDir}/site_tmp.json`, JSON.stringify(data, null, 2));
     var addSite = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
-    echo "### Publish tools install ###";
+    echo "### Publishtools install ###";
     publishtools install;
-    echo "### Publish tools build ###";
-    echo "Website building, It may take a time ...";
+    echo "### Publishtools build ###";
+    echo "Website building, It may take a time ......";
     publishtools build;` , {shell: "/bin/bash"});
 
     addSite.stdout.setEncoding('utf8');
@@ -693,9 +695,11 @@ router.post('/sites', asyncHandler(async (req, res) => {
     });
 
     addSite.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_tmp.json`)
         console.log("Reload Server Config")
         server.init();
-        console.log("Done adding site")
+        console.log(chalk.green('✓ Done adding site'))
         res.send('{"success": true}')
         console.log(`process exit code ${code}`);
     });

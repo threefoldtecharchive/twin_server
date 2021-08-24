@@ -28,8 +28,8 @@
     },
 
     "nodejs":{
-        "production": false,
-        "ssl": false
+        "production": true,
+        "ssl": true
     },
 
     "info": {}

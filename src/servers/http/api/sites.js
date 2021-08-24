@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 const asyncHandler = require('express-async-handler')
 const config = require('../../../config')
+const server = require('../../../server')
 
 const logger = require('../../../logger')
 const path = require('path')
 var axios  = require('axios')
 var fs = require('fs');
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 async function getContent(filepath, httppath, encoding, info){
     console.log(`+++getting content for ${filepath} ${httppath}`)
@@ -632,69 +633,75 @@ router.post('/wikis', asyncHandler(async (req, res) => {
     data = req.body
     console.log("WIKI POST DATA::")
     console.log(data)
-    try{
-        fs.mkdirSync('/tmp/publishtools');
-    }catch(e){
-        console.log("Mkdir Error:: ", e)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
     }
-    fs.writeFileSync('/tmp/publishtools/site_wiki_tmp.json', JSON.stringify(data));
-    exec(`
+    fs.writeFileSync(`${tmpDir}/site_wiki_tmp.json`, JSON.stringify(data));
+    var addWiki = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
-    echo "### Publish tools install ###";
+    echo "### Publishtools install ###";
     publishtools install;
-    echo "### Publish tools flatten ###";
-    publishtools flatten;
-    cd /workspace/twin_server/src;
-    echo "Restart Twin server";
-    PID=$(ps aux | grep "[n]ode server.js" | grep -v 'bash' | tr -s " " | cut -d" " -f2);
-    kill -SIGUSR1 $PID` , {shell: "/bin/bash"}, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
+    echo "### Publishtools flatten ###";
+    publishtools flatten;` , {shell: "/bin/bash"});
+
+    addWiki.stdout.setEncoding('utf8');
+    addWiki.stdout.on('data', function (data) {
+        console.log(`- stdout: add new wiki: ${data}`)
     });
-    console.log("Done adding wiki")
-    res.send('{"success": true}')
+
+    addWiki.stderr.on('data', function (data) {
+        console.log(`- stdout: add new wiki: ${data}`)
+    });
+
+    addWiki.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_wiki_tmp.json`)
+        console.log("Reload Server Config")
+        server.init();
+        console.log(chalk.green('✓ Done adding wiki'))
+        res.send('{"success": true}')
+        console.log(`process exit code ${code}`);
+    });
+    
 }))
 
 router.post('/sites', asyncHandler(async (req, res) => {
     data = req.body
     console.log("SITE POST DATA::")
     console.log(data)
-    try{
-        fs.mkdirSync('/tmp/publishtools');
-    }catch(e){
-        console.log("Mkdir Error:: ", e)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
     }
-    fs.writeFileSync('/tmp/publishtools/site_tmp.json', JSON.stringify(data, null, 2));
-    exec(`
+    fs.writeFileSync(`${tmpDir}/site_tmp.json`, JSON.stringify(data, null, 2));
+    var addSite = spawn(`
     . /workspace/env.sh;
     cd /tmp/publishtools;
-    echo "### Publish tools install ###";
+    echo "### Publishtools install ###";
     publishtools install;
-    echo "### Publish tools build ###";
-    publishtools build;
-    cd /workspace/twin_server/src;
-    echo "Restart Twin server";
-    PID=$(ps aux | grep "[n]ode server.js" | grep -v 'bash' | tr -s " " | cut -d" " -f2);
-    kill -SIGUSR1 $PID` , {shell: "/bin/bash"}, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
+    echo "### Publishtools build ###";
+    echo "Website building, It may take a time ......";
+    publishtools build;` , {shell: "/bin/bash"});
+
+    addSite.stdout.setEncoding('utf8');
+    addSite.stdout.on('data', function (data) {
+        console.log(`- stdout: add new site: ${data}`)
     });
-    console.log("Done adding site")
-    res.send('{"success": true}')
+
+    addSite.stderr.on('data', function (data) {
+        console.log(`- stderr: add new site: ${data}`)
+    });
+
+    addSite.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_tmp.json`)
+        console.log("Reload Server Config")
+        server.init();
+        console.log(chalk.green('✓ Done adding site'))
+        res.send('{"success": true}')
+        console.log(`process exit code ${code}`);
+    });
 }))
 module.exports = router

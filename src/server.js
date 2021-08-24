@@ -19,13 +19,12 @@ async function init(){
     var old_config = Object.assign({}, config.info) 
 
     try{
-      var domainsList = []
 
       await config.load()
       await rewrite.load()
-
-      domainsList.push(...await localDrive.load())
       
+      var domainsList = []
+      domainsList.push(...await localDrive.load())
       var cleanup = function () {}
 
       if(config.hyperdrive.enabled){
@@ -33,7 +32,6 @@ async function init(){
         domainsList.push(...await hyperdrive.load())
       }
       var info = await utils.reduce(domainsList)
-      
       config.info = info
 
       // write new greenlock config
@@ -162,5 +160,5 @@ async function main(){
       }
     }
   }
-
+module.exports = { init}
 main()

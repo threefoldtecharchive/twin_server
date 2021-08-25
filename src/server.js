@@ -19,8 +19,13 @@ async function init(){
     var old_config = Object.assign({}, config.info) 
 
     try{
-
-      await config.load()
+      config_path = null;
+      process.argv.forEach( (val,ind,arr) => {
+        if (val == "--config" || val == "-c") {
+          config_path = arr[ind+1]
+        }
+      });
+      await config.load(config_path)
       await rewrite.load()
       
       var domainsList = []

@@ -4,18 +4,18 @@ const { spawn } = require("child_process");
 
 const utils = require('./utils')
 
-async function updateSitesConfig(config){
+async function updateSitesConfig(){
     /* Example:
     https://github.com/threefoldfoundation/www_config_private/tree/main
     git@github.com:threefoldfoundation/www_config_private/tree/main
     */
-    sitesConfigRepo = config.publishtools.sitesConfig;
+    sitesConfigRepo = this.publishtools.sitesConfig;
     
     // After this condition output will be [threefoldfoundation, www_config_private, tree, main] for both.
     if (sitesConfigRepo.startsWith("git@")){
         sitesConfigRepo = sitesConfigRepo.split(':')[1].split('/')
     }else if(sitesConfigRepo.startsWith("https")){
-        sitesConfigRepo = sitesConfigRepo.split('/').slice(3,-1);
+        sitesConfigRepo = sitesConfigRepo.split('/').slice(3);
     }
 
     accountName = sitesConfigRepo[0]
@@ -26,7 +26,7 @@ async function updateSitesConfig(config){
     }
 
     getSitesConfig = spawn('echo', ['Get sites config repo'])
-    repoLocalPath = `${config.publishtools.root}config`;
+    repoLocalPath = `${this.publishtools.root}config`;
     if (fs.existsSync(`${repoLocalPath}/${repoName}`)){
         console.log(chalk.yellow("Sites config repo exist, will pull latest changes"))
         getSitesConfig = spawn(`

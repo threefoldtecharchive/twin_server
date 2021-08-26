@@ -715,28 +715,80 @@ router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
     var update = null
-    console.log(chalk.yellow('Updating ....'))
-    // Check if request data is empty --> Upgrade all files in config.publishtools.sitesConfig
+    console.log(chalk.yellow('- Updating ....'))
+    config.updateSitesConfig()
+
+    // Check if request data is empty
+    if (Object.keys(data).length == 0){
+        console.log(chalk.red(`- error: Missing data in the request`));
+        res.send("status": false, "msg": "Missing data in the request");
+        return res.status(400);
+    }
+
     for (dir in data){
-        elements = data[dir]
-        for (i in elements){
-            console.log(`Updating ${config.publishtools.sitesConfigPath}/${dir}/${elements[i]}`)
+        dirPath = `${config.publishtools.sitesConfigPath}/${dir}`
+        if (fs.existsSync(dirPath)){
+            elements = data[dir]
+            // Check if elements is empty, install, flatten and build for all files in dir
+            if (elements.length == 0){
+                console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
+                update = spawn(`
+                . /workspace/env.sh;
+                cd ${dirPath};
+                echo "### Publishtools install ###";
+                publishtools install;
+                echo "### Publishtools flatten ###";
+                publishtools flatten;
+                echo "### Publishtools build ###";
+                echo "Website building, It may take a time ......";
+                publishtools build;` , {shell: "/bin/bash"})
+            }else{
+                // List all files in this dir
+                elements.sort((element1, element2) => {
+                    if (element1.includes("_wiki_")){
+                        return -1
+                    }else{
+                        return 1
+                    }
+                })
+                listDir = fs.readdirSync(dirPath)
+                for (element of elements){
+                    // Check if the element is in this dir
+                    if (element in listDir){
+                        console.log(chalk.yellow(`Updating ${dirPath}/${element}`));
+                        // Get config name
+                        f = fs.readFileSync(`${dirPath}/${element}`);
+                        elementJson = JSON.parse(f);
+                        if element.includes("_wiki_"){
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools flatten ###";
+                            publishtools flatten --repo ${elementJson.name};
+                            `
+                        }else{
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools build ###";
+                            publishtools build --repo ${elementJson.name};
+                            `
+                        }
+                        update.spawn(cmd, {shell: "/bin/bash"})
+                        res.send("status": true);
+                    }else{
+                        console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))
+                    }
+                }
+            }
+        }else{
+            console.log(chalk.red(`Wrong directory, ${dirPath} not exist`))
         }
     }
-    // if (Object.keys(data).length == 0){
-    //     update = spawn(`
-    //     . /workspace/env.sh;
-    //     cd ${config.publishtools.sitesConfigPath};
-    //     echo "### Publishtools install ###";
-    //     publishtools install;
-    //     echo "### Publishtools flatten ###";
-    //     publishtools flatten;
-    //     echo "### Publishtools build ###";
-    //     echo "Website building, It may take a time ......";
-    //     publishtools build;` , {shell: "/bin/bash"})
-    // }else{
-    //     update = spawn('echo', ['> NOT Updating ...... '])
-    // }
 
     update.stdout.setEncoding('utf8');
     update.stdout.on('data', function (data) {

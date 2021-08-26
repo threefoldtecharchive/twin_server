@@ -778,7 +778,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                             publishtools build --repo ${elementJson.name};
                             `
                         }
-                        update.spawn(cmd, {shell: "/bin/bash"})
+                        update = spawn(cmd, {shell: "/bin/bash"})
                         res.send({"status": true});
                     }else{
                         console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))

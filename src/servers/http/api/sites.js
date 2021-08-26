@@ -817,9 +817,9 @@ router.post('/update', asyncHandler(async (req, res) => {
 
     update.on('close', function (code) {
         if (code == 0) {
-            res.send({"success": true, "msg":})
+            res.send({"success": true, "msg":""})
         }else{
-            res.send({"success": false, "msg":})
+            res.send({"success": false, "msg":""})
         }
         console.log("Reload Server Config")
         server.init();

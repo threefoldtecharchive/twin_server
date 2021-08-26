@@ -9,7 +9,7 @@ class LocalDrive{
     constructor(){
         this.name = "local"
         this.load = async function() {
-            this.base = config.publishtools.root
+            this.base = `${config.publishtools.root}publish`
             if(!fs.statSync(this.base)){
                 console.log(chalk.red(`\t(X) Can not load local drive - publishtools root dir does not exist ${this.base})`))
                 process.exit(1)

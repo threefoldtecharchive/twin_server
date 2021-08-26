@@ -630,6 +630,7 @@ router.get('/:website/*', asyncHandler(async (req, res) => {
     }
 }))
 
+/* No Need for adding new config for now
 router.post('/wikis', asyncHandler(async (req, res) => {
     data = req.body
     console.log("WIKI POST DATA::")
@@ -708,5 +709,47 @@ router.post('/sites', asyncHandler(async (req, res) => {
         server.init();
         console.log(`process exit code ${code}`);
     });
-}))
+}));
+*/
+router.post('/update', asyncHandler(async (req, res) => {
+    data = req.body;
+    console.log(data);
+    var update = spawn('echo', ['> Updating ...... '])
+    // Check if request data is empty --> Upgrade all files in config.publishtools.sitesConfig
+    if (Object.keys(data).length == 0){
+        update = spawn(`
+        . /workspace/env.sh;
+        cd ${config.publishtools.sitesConfigPath};
+        echo "### Publishtools install ###";
+        publishtools install;
+        echo "### Publishtools flatten ###";
+        publishtools flatten;
+        echo "### Publishtools build ###";
+        echo "Website building, It may take a time ......";
+        publishtools build;` , {shell: "/bin/bash"})
+    }else{
+        update = spawn('echo', ['> NOT Updating ...... '])
+    }
+
+    update.stdout.setEncoding('utf8');
+    update.stdout.on('data', function (data) {
+        console.log(`>> ${data}`)
+    });
+
+    update.stderr.on('data', function (data) {
+        console.log(chalk.red(`>> error: ${data}`))
+    });
+
+    update.on('close', function (code) {
+        if (code == 0) {
+            res.send('{"success": true}')
+        }else{
+            res.send('{"success": false}')
+        }
+        console.log("Reload Server Config")
+        server.init();
+        console.log(chalk.green(`Updates Done!`));
+        console.log(`process exit code ${code}`);
+    });
+}));
 module.exports = router

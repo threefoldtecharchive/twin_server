@@ -165,5 +165,5 @@ async function main(){
       }
     }
   }
-module.exports = { init}
+module.exports = { init }
 main()

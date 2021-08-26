@@ -1,14 +1,17 @@
 const fs = require('fs');
 const chalk = require('chalk')
+const { spawn } = require("child_process");
 
 const utils = require('./utils')
 
-async function updateSitesConfig(){
-    // https://github.com/threefoldfoundation/www_config_private/tree/main
-    // git@github.com:threefoldfoundation/www_config_private/tree/main
+async function updateSitesConfig(config){
+    /* Example:
+    https://github.com/threefoldfoundation/www_config_private/tree/main
+    git@github.com:threefoldfoundation/www_config_private/tree/main
+    */
     sitesConfigRepo = config.publishtools.sitesConfig;
     
-    // After this condition output will be [threefoldfoundation, www_config_private, tree, main] for both
+    // After this condition output will be [threefoldfoundation, www_config_private, tree, main] for both.
     if (sitesConfigRepo.startsWith("git@")){
         sitesConfigRepo = sitesConfigRepo.split(':')[1].split('/')
     }else if(sitesConfigRepo.startsWith("https")){
@@ -54,13 +57,14 @@ async function updateSitesConfig(){
 
     getSitesConfig.on('close', function (code) {
         if (code == 0) {
-            console.log(chalk.green(`>> Updates sites configurations done!`));
-            return `${repoLocalPath}/${repoName}`
+            console.log(chalk.green(`>> Update sites configurations done!`));
         }else{
             console.log(chalk.red(`>> error: Failed to update sites configurations`));
         }
         console.log(`>> process exit code ${code}`);
     });
+    path =`${repoLocalPath}/${repoName}`;
+    return path
 }
 
 async function load(config_path){
@@ -70,7 +74,7 @@ async function load(config_path){
         config = JSON.parse(fs.readFileSync(config_path));
         config.publishtools.root = await utils.resolvePath(config.publishtools.root)
         config.hyperdrive.path = await utils.resolvePath(config.hyperdrive.path)
-        config.publishtools.sitesConfigPath = await updateSitesConfig()
+        config.publishtools.sitesConfigPath = await updateSitesConfig(config)
     }catch(e){
         console.log(chalk.red('X (Config) could not be loaded'))
         console.log(e)
@@ -87,6 +91,7 @@ async function load(config_path){
 class Config{
     constructor(){
          this.load = load
+         this.updateSitesConfig = updateSitesConfig
     }
 }
 

@@ -714,22 +714,29 @@ router.post('/sites', asyncHandler(async (req, res) => {
 router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
-    var update = spawn('echo', ['> Updating ...... '])
+    var update = null
+    console.log(chalk.yellow('Updating ....'))
     // Check if request data is empty --> Upgrade all files in config.publishtools.sitesConfig
-    if (Object.keys(data).length == 0){
-        update = spawn(`
-        . /workspace/env.sh;
-        cd ${config.publishtools.sitesConfigPath};
-        echo "### Publishtools install ###";
-        publishtools install;
-        echo "### Publishtools flatten ###";
-        publishtools flatten;
-        echo "### Publishtools build ###";
-        echo "Website building, It may take a time ......";
-        publishtools build;` , {shell: "/bin/bash"})
-    }else{
-        update = spawn('echo', ['> NOT Updating ...... '])
+    for (dir in data){
+        elements = data[dir]
+        for (i in elements){
+            console.log(`Updating ${config.publishtools.sitesConfigPath}/${dir}/${elements[i]}`)
+        }
     }
+    // if (Object.keys(data).length == 0){
+    //     update = spawn(`
+    //     . /workspace/env.sh;
+    //     cd ${config.publishtools.sitesConfigPath};
+    //     echo "### Publishtools install ###";
+    //     publishtools install;
+    //     echo "### Publishtools flatten ###";
+    //     publishtools flatten;
+    //     echo "### Publishtools build ###";
+    //     echo "Website building, It may take a time ......";
+    //     publishtools build;` , {shell: "/bin/bash"})
+    // }else{
+    //     update = spawn('echo', ['> NOT Updating ...... '])
+    // }
 
     update.stdout.setEncoding('utf8');
     update.stdout.on('data', function (data) {

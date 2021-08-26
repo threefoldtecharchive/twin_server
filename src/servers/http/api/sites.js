@@ -714,8 +714,8 @@ router.post('/sites', asyncHandler(async (req, res) => {
 router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
-    var update = null
-    console.log(chalk.yellow('- Updating ....'))
+    var update = spawn('echo', ["Updating ...."])
+    // console.log(chalk.yellow('- Updating ....'))
     config.updateSitesConfig(config)
 
     // Check if request data is empty
@@ -754,7 +754,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                 listDir = fs.readdirSync(dirPath)
                 for (element of elements){
                     // Check if the element is in this dir
-                    if (element in listDir){
+                    if (listDir.includes(element)){
                         console.log(chalk.yellow(`Updating ${dirPath}/${element}`));
                         // Get config name
                         f = fs.readFileSync(`${dirPath}/${element}`);

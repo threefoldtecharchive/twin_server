@@ -714,6 +714,10 @@ router.post('/sites', asyncHandler(async (req, res) => {
 router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
+    tmpDir = `/tmp/publishtools.${Date.now()}/`
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, {recursive: true})
+    }
     var update = spawn('echo', ["Updating ...."])
     // console.log(chalk.yellow('- Updating ....'))
     config.updateSitesConfig(config)
@@ -743,7 +747,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                 echo "Website building, It may take a time ......";
                 publishtools build;` , {shell: "/bin/bash"})
             }else{
-                // List all files in this dir
+                // List all files in this dir, Sort them to make wikis first
                 elements.sort((element1, element2) => {
                     if (element1.includes("_wiki_")){
                         return -1
@@ -759,31 +763,43 @@ router.post('/update', asyncHandler(async (req, res) => {
                         // Get config name
                         f = fs.readFileSync(`${dirPath}/${element}`);
                         elementJson = JSON.parse(f);
-                        if (element.includes("_wiki_")){
-                            cmd = `
-                            . /workspace/env.sh;
-                            cd ${dirPath};
-                            echo "### Publishtools install ###";
-                            publishtools install;
-                            echo "### Publishtools flatten ###";
-                            publishtools flatten --repo ${elementJson.name};
-                            `
-                        }else{
-                            cmd = `
-                            . /workspace/env.sh;
-                            cd ${dirPath};
-                            echo "### Publishtools install ###";
-                            publishtools install;
-                            echo "### Publishtools build ###";
-                            publishtools build --repo ${elementJson.name};
-                            `
-                        }
-                        update = spawn(cmd, {shell: "/bin/bash"})
-                        res.send({"status": true});
+                        fs.copyFile(`${dirPath}/${element}`, `${tmpDir}/${element}`)
+                        // if (element.includes("_wiki_")){
+                        //     cmd = `
+                        //     . /workspace/env.sh;
+                        //     cd ${dirPath};
+                        //     echo "### Publishtools install ###";
+                        //     publishtools install;
+                        //     echo "### Publishtools flatten ###";
+                        //     publishtools flatten --repo ${elementJson.name};
+                        //     `
+                        // }else{
+                        //     cmd = `
+                        //     . /workspace/env.sh;
+                        //     cd ${dirPath};
+                        //     echo "### Publishtools install ###";
+                        //     publishtools install;
+                        //     echo "### Publishtools build ###";
+                        //     publishtools build --repo ${elementJson.name};
+                        //     `
+                        // }
+                        // update = spawn(cmd, {shell: "/bin/bash"})
+                        // res.send({"status": true});
                     }else{
                         console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))
                     }
                 }
+                console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
+                update = spawn(`
+                . /workspace/env.sh;
+                cd ${tmpDir};
+                echo "### Publishtools install ###";
+                publishtools install;
+                echo "### Publishtools flatten ###";
+                publishtools flatten;
+                echo "### Publishtools build ###";
+                echo "Website building, It may take a time ......";
+                publishtools build`, {shell: "/bin/bash"})
             }
         }else{
             console.log(chalk.red(`Wrong directory, ${dirPath} not exist`))
@@ -801,9 +817,9 @@ router.post('/update', asyncHandler(async (req, res) => {
 
     update.on('close', function (code) {
         if (code == 0) {
-            res.send('{"success": true}')
+            res.send({"success": true, "msg":})
         }else{
-            res.send('{"success": false}')
+            res.send({"success": false, "msg":})
         }
         console.log("Reload Server Config")
         server.init();

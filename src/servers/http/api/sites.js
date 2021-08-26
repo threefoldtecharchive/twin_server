@@ -763,7 +763,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                         // Get config name
                         f = fs.readFileSync(`${dirPath}/${element}`);
                         elementJson = JSON.parse(f);
-                        fs.copyFile(`${dirPath}/${element}`, `${tmpDir}/${element}`)
+                        fs.copyFileSync(`${dirPath}/${element}`, `${tmpDir}/${element}`)
                         // if (element.includes("_wiki_")){
                         //     cmd = `
                         //     . /workspace/env.sh;

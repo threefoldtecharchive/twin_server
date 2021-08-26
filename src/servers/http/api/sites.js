@@ -721,7 +721,7 @@ router.post('/update', asyncHandler(async (req, res) => {
     // Check if request data is empty
     if (Object.keys(data).length == 0){
         console.log(chalk.red(`- error: Missing data in the request`));
-        res.send("status": false, "msg": "Missing data in the request");
+        res.send({"status": false, "msg": "Missing data in the request"});
         return res.status(400);
     }
 
@@ -779,7 +779,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                             `
                         }
                         update.spawn(cmd, {shell: "/bin/bash"})
-                        res.send("status": true);
+                        res.send({"status": true});
                     }else{
                         console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))
                     }

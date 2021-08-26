@@ -63,7 +63,7 @@ async function updateSitesConfig(config){
         }
         console.log(`>> process exit code ${code}`);
     });
-    path =`${repoLocalPath}/${repoName}`;
+    path =`${repoLocalPath}/${repoName}/configs`;
     return path
 }
 

@@ -20,8 +20,8 @@
     },
 
     "publishtools" : {
-        "root" : "/workspace/publisher/publish/",
-        "config": "/workspace/publisher/config/"
+        "root" : "/workspace/publisher/",
+        "sitesConfig": "https://github.com/threefoldfoundation/www_config_private/tree/main"
     },
 
     "threebot": {

@@ -716,7 +716,7 @@ router.post('/update', asyncHandler(async (req, res) => {
     console.log(data);
     var update = null
     console.log(chalk.yellow('- Updating ....'))
-    config.updateSitesConfig()
+    config.updateSitesConfig(config)
 
     // Check if request data is empty
     if (Object.keys(data).length == 0){

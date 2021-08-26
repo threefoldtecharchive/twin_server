@@ -4,12 +4,12 @@ const { spawn } = require("child_process");
 
 const utils = require('./utils')
 
-async function updateSitesConfig(){
+async function updateSitesConfig(config){
     /* Example:
     https://github.com/threefoldfoundation/www_config_private/tree/main
     git@github.com:threefoldfoundation/www_config_private/tree/main
     */
-    sitesConfigRepo = this.publishtools.sitesConfig;
+    sitesConfigRepo = config.publishtools.sitesConfig;
     
     // After this condition output will be [threefoldfoundation, www_config_private, tree, main] for both.
     if (sitesConfigRepo.startsWith("git@")){
@@ -26,7 +26,7 @@ async function updateSitesConfig(){
     }
 
     getSitesConfig = spawn('echo', ['Get sites config repo'])
-    repoLocalPath = `${this.publishtools.root}config`;
+    repoLocalPath = `${config.publishtools.root}config`;
     if (fs.existsSync(`${repoLocalPath}/${repoName}`)){
         console.log(chalk.yellow("Sites config repo exist, will pull latest changes"))
         getSitesConfig = spawn(`
@@ -74,6 +74,7 @@ async function load(config_path){
         config = JSON.parse(fs.readFileSync(config_path));
         config.publishtools.root = await utils.resolvePath(config.publishtools.root)
         config.hyperdrive.path = await utils.resolvePath(config.hyperdrive.path)
+        config.publishtools.sitesConfigPath = await updateSitesConfig(config)
     }catch(e){
         console.log(chalk.red('X (Config) could not be loaded'))
         console.log(e)
@@ -83,7 +84,6 @@ async function load(config_path){
     for(var item in config){
         this[item] = config[item]
     }
-    config.publishtools.sitesConfigPath = await updateSitesConfig()
     console.log(chalk.green(`✓ (Config) loaded from ${config_path}`))
 }
 

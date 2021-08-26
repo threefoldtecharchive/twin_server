@@ -74,7 +74,6 @@ async function load(config_path){
         config = JSON.parse(fs.readFileSync(config_path));
         config.publishtools.root = await utils.resolvePath(config.publishtools.root)
         config.hyperdrive.path = await utils.resolvePath(config.hyperdrive.path)
-        config.publishtools.sitesConfigPath = await updateSitesConfig(config)
     }catch(e){
         console.log(chalk.red('X (Config) could not be loaded'))
         console.log(e)
@@ -84,6 +83,7 @@ async function load(config_path){
     for(var item in config){
         this[item] = config[item]
     }
+    config.publishtools.sitesConfigPath = await updateSitesConfig()
     console.log(chalk.green(`✓ (Config) loaded from ${config_path}`))
 }
 

@@ -12,10 +12,10 @@ Digitaltinw provides
 ## Main components
 - Main server and publishing functionalities (this repo)
     - publish wikis and websites from `~/.publisher/publish` directory
-- Filebrowser, chatting, digital avatar 
+- Filebrowser, chatting, digital avatar
     - Backend [digitaltwin-lib](https://github.com/threefoldtech/digitaltwin-lib) installed as a dependency
     - Frontend [twin_aydo](https://github.com/threefoldtech/twin_aydo) built and installed using publishtools as indicated below
- 
+
 ## Installation
 - Install [publishtools](https://info.threefold.io/info/publishtools#/publishtools__install)
 - we need to run `publishtools` command from a directory containing a config file `sites.json`. if you don't have this config file create a new one with the following content ([The digitaltwin frontend](https://github.com/threefoldtech/twin_aydo))
@@ -45,13 +45,51 @@ Digitaltinw provides
                     }
             }]
     ```
-- `publishtools install` Init publishtools 
+- `publishtools install` Init publishtools
 - `publishtools build --pathprefix` build the `www_threefold_twin` or the `digitaltwin` frontend website
 - By default the publisher will serve websites from `~/.publisher/publish` directory that says that when u build a website/wiki, the build will be saved in this direcoty.
 - `publishtools publish_config_save` Save the config file you are using in `~/.publisher/sites.json`
 
-# Run Digitaltwin
-- `publishtools develop` Run publishtools (required now to get wikis from) 
+
+## Docker image
+
+To build the docker image
+
+```
+docker build -t <org>/publishtools . --tag <version>
+```
+
+To run, you should be able to configure ssh private key (if your config site is repo is private) and other configs via the following env variables (see [src/config.json](src/config.json) for possible values:
+
+
+```
+SSHKEY
+CONFIG_DNS_PORT
+CONFIG_DNS_ENABLED
+CONFIG_HTTP_PORT
+CONFIG_HTTP_SESSION_SECRET
+CONFIG_HTTP_DEVPORT
+CONFIG_HTTP_PUBLISHTOOLSPORT
+CONFIG_HYPERDRIVE_PATH
+CONFIG_HYPERDRIVE_ENABLED
+CONFIG_HYPERDRIVE_DRIVES
+CONFIG_PUBLISHTOOLS_ROOT
+CONFIG_PUBLISHTOOLS_SITESCONFIG
+CONFIG_THREEBOT_PASSPHRASE
+CONFIG_NODEJS_PRODUCTION
+CONFIG_NODEJS_SSL
+```
+
+Example running the image:
+
+```bash
+export SSHKEY=$(cat ~/.ssh/github1)
+docker run --env SSHKEY -e CONFIG_NODEJS_PRODUCTION=false -e CONFIG_PUBLISHTOOLS_SITESCONFIG=git@github.com:threefoldfoundation/www_config_private.git -p 3000:3000 --name pt1 pubtools
+```
+
+## Run Digitaltwin
+- `publishtools develop` Run publishtools (required now to get wikis from)
 - `node server` dev mode
 - `NODE_ENV=production SERET=mysecret  THREEBOT_PHRASE="my threebot phrase" node server` production without ssl handling (ssl offloading)
 - `NODE_ENV=production SERET=mysecret ENABLE_SSL=true THREEBOT_PHRASE="my threebot phrase" node server` production with (ssl)
+

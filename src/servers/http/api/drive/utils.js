@@ -30,7 +30,7 @@ async function process(drive, dir){
             if(filename.startsWith("config_")){
                 var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
                 var item = JSON.parse(data)
-                var url = item.raw.git_url.split("/") || item.git_url.split("/")
+                var url = (item.raw && item.raw.git_url.split("/")) || item.git_url.split("/")
                 
                 var isWebsite = item.cat == 2
                 var isWiki = item.cat == 0

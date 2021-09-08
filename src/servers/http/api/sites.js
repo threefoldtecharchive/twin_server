@@ -216,6 +216,13 @@ async function handleWikiFile(req, res, info){
  
     var encoding = 'utf-8'  
     
+    if (filename.includes("_sidebar.md")){
+        console.log(filename)
+        old = filename
+        filename = filename .replace('/_', '_').replace('/', '_')
+        console.log(`Change from ${old} to ${filename}`)
+    }
+
     if (filename == "_sidebar.md"){
         filename = "sidebar.md"
     }
@@ -714,6 +721,7 @@ router.post('/sites', asyncHandler(async (req, res) => {
 router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
+    lastErrorMsg = ""
     tmpDir = `/tmp/publishtools.${Date.now()}/`
     if (!fs.existsSync(tmpDir)){
         fs.mkdirSync(tmpDir, {recursive: true})
@@ -764,27 +772,29 @@ router.post('/update', asyncHandler(async (req, res) => {
                         f = fs.readFileSync(`${dirPath}/${element}`);
                         elementJson = JSON.parse(f);
                         fs.copyFileSync(`${dirPath}/${element}`, `${tmpDir}/${element}`)
-                        // if (element.includes("_wiki_")){
-                        //     cmd = `
-                        //     . /workspace/env.sh;
-                        //     cd ${dirPath};
-                        //     echo "### Publishtools install ###";
-                        //     publishtools install;
-                        //     echo "### Publishtools flatten ###";
-                        //     publishtools flatten --repo ${elementJson.name};
-                        //     `
-                        // }else{
-                        //     cmd = `
-                        //     . /workspace/env.sh;
-                        //     cd ${dirPath};
-                        //     echo "### Publishtools install ###";
-                        //     publishtools install;
-                        //     echo "### Publishtools build ###";
-                        //     publishtools build --repo ${elementJson.name};
-                        //     `
-                        // }
-                        // update = spawn(cmd, {shell: "/bin/bash"})
-                        // res.send({"status": true});
+                        /* ------ WILL BE USED IF --repo OPTION RETURNED ------
+                        if (element.includes("_wiki_")){
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools flatten ###";
+                            publishtools flatten --repo ${elementJson.name};
+                            `
+                        }else{
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools build ###";
+                            publishtools build --repo ${elementJson.name};
+                            `
+                        }
+                        update = spawn(cmd, {shell: "/bin/bash"})
+                        res.send({"status": true});
+                        ---------------------------------------------------- */
                     }else{
                         console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))
                     }
@@ -812,14 +822,15 @@ router.post('/update', asyncHandler(async (req, res) => {
     });
 
     update.stderr.on('data', function (data) {
+        lastErrorMsg = data
         console.log(chalk.red(`>> error: ${data}`))
     });
 
     update.on('close', function (code) {
         if (code == 0) {
-            res.send({"success": true, "msg":""})
+            res.send({"success": true, "msg":"Updates Done!"})
         }else{
-            res.send({"success": false, "msg":""})
+            res.send({"success": false, "msg":`Updates failed with error ${lastErrorMsg}`})
         }
         console.log("Reload Server Config")
         server.init();

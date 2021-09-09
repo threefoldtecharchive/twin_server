@@ -118,11 +118,10 @@ app.use(function (req, res, next) {
         return
     }
 
-    if (req.url.startsWith('/logout')) {
+    if (req.url.startsWith('/logout') || req.url == "/update") {
         next()
         return
     }
-    
 
 
     var info = null
@@ -248,7 +247,7 @@ app.use(function (req, res, next) {
 })
 
 app.use((req, res, next) => {
-    if (req.url.startsWith('/threebot') || req.url.startsWith('/logout')) {
+    if (req.url.startsWith('/threebot') || req.url.startsWith('/logout') || req.url == "/update") {
         next()
         return
     }

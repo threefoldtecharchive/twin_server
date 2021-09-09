@@ -722,6 +722,7 @@ router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
     lastErrorMsg = ""
+    env_file = `${config.publishtools.root}env.sh`
     tmpDir = `/tmp/publishtools.${Date.now()}/`
     if (!fs.existsSync(tmpDir)){
         fs.mkdirSync(tmpDir, {recursive: true})
@@ -745,7 +746,7 @@ router.post('/update', asyncHandler(async (req, res) => {
             if (elements.length == 0){
                 console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
                 update = spawn(`
-                . /workspace/env.sh;
+                . ${env_file};
                 cd ${dirPath};
                 echo "### Publishtools install ###";
                 publishtools install;
@@ -801,7 +802,7 @@ router.post('/update', asyncHandler(async (req, res) => {
                 }
                 console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
                 update = spawn(`
-                . /workspace/env.sh;
+                . ${env_file};
                 cd ${tmpDir};
                 echo "### Publishtools install ###";
                 publishtools install;

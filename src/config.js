@@ -11,6 +11,9 @@ async function updateSitesConfig(config){
     */
     sitesConfigRepo = config.publishtools.sitesConfig;
     
+    if (sitesConfigRepo.endsWith(".git")){
+        sitesConfigRepo = sitesConfigRepo.replace('.git', '')
+    }
     // After this condition output will be [threefoldfoundation, www_config_private, tree, main] for both.
     if (sitesConfigRepo.startsWith("git@")){
         sitesConfigRepo = sitesConfigRepo.split(':')[1].split('/')

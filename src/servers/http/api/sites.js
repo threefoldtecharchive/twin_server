@@ -722,11 +722,19 @@ router.post('/update', asyncHandler(async (req, res) => {
     data = req.body;
     console.log(data);
     lastErrorMsg = ""
+    update_date = new Date()
+    update_date_1 = `${update_date.getUTCFullYear()}_${update_date.getUTCMonth()+1}_${update_date.getUTCDate()}`
+    update_date_2 = `${update_date.getUTCHours()}_${update_date.getUTCMinutes()}_${update_date.getUTCSeconds()}`
     env_file = `${config.publishtools.root}env.sh`
-    tmpDir = `/tmp/publishtools.${Date.now()}/`
+    tmpDir = `/tmp/publishtools/${update_date_1}/${update_date_2}/`
+    tmpStdOut = `${tmpDir}stdout`
+    tmpStdErr = `${tmpDir}stderr`
     if (!fs.existsSync(tmpDir)){
         fs.mkdirSync(tmpDir, {recursive: true})
+        fs.writeFileSync(tmpStdOut, "")
+        fs.writeFileSync(tmpStdErr, "")
     }
+    
     var update = spawn('echo', ["Updating ...."])
     // console.log(chalk.yellow('- Updating ....'))
     config.updateSitesConfig(config)
@@ -820,11 +828,13 @@ router.post('/update', asyncHandler(async (req, res) => {
     update.stdout.setEncoding('utf8');
     update.stdout.on('data', function (data) {
         console.log(`>> ${data}`)
+        fs.appendFileSync(tmpStdOut, data)
     });
 
     update.stderr.on('data', function (data) {
         lastErrorMsg = data
         console.log(chalk.red(`>> error: ${data}`))
+        fs.appendFileSync(tmpStdErr, data)
     });
 
     update.on('close', function (code) {

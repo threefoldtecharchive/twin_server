@@ -2,38 +2,38 @@ var path = require('path')
 const chalk = require('chalk');
 const groups = require('./groups')
 var utils = require('../../../../utils')
-const systemprocess = require('process')
+const systemProcess = require('process')
 
 async function process(drive, dir){
     var p = path.join("/", dir)
 
-    var configdirpath = p
+    var configDirPath = p
     
     try{
-        await drive.promises.stat(configdirpath)
+        await drive.promises.stat(configDirPath)
     }catch(e){
         console.log(chalk.red(`    X (Twin Server) missing config dir)`))
-        systemprocess.exit(1)
+        systemProcess.exit(1)
     }
 
     var sitesConfig = {}
-    var sitegroups = {}
+    var siteGroups = {}
 
-    var files = await  drive.promises.readdir(configdirpath)
+    var files = await  drive.promises.readdir(configDirPath)
     
     var filename = ""
     try{
 
         for(var i=0; i <  files.length; i++){
             filename = files[i]
-            var configfilepath =  path.join(configdirpath, filename)
+            var configFilePath =  path.join(configDirPath, filename)
             if(filename.startsWith("config_")){
-                var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
+                var data = await  drive.promises.readFile(configFilePath, 'utf8', false);
                 var item = JSON.parse(data)
                 var url = (item.raw && item.raw.git_url.split("/")) || item.git_url.split("/")
                 
-                var isWebsite = item.cat == 2
-                var isWiki = item.cat == 0
+                var isWebsite = item.cat == "web" || item.cat == 2
+                var isWiki = item.cat == "wiki" || item.cat == 0
                 var name = item.name
                 if(isWebsite){
                     name = `www_${item.name}`
@@ -46,12 +46,12 @@ async function process(drive, dir){
                 item.repo = url[tree-1]
                 sitesConfig[name] = item
             }else if (filename.startsWith("groups_")){
-                var data = await  drive.promises.readFile(configfilepath, 'utf8', false);
+                var data = await  drive.promises.readFile(configFilePath, 'utf8', false);
                 var item = JSON.parse(data)
                 for (var k=0; k<item.length; k++){
                     var g = item[k]
-                    if (!(g.name in sitegroups)){
-                        sitegroups[g.name] = {"users": g.members_users, "groups": g.members_groups}
+                    if (!(g.name in siteGroups)){
+                        siteGroups[g.name] = {"users": g.members_users, "groups": g.members_groups}
                     }
                 }
             }
@@ -67,7 +67,7 @@ async function process(drive, dir){
     var domains = {}
 
     var dirs = await drive.promises.readdir(p)
-    var groupObj = await groups.load(sitegroups)
+    var groupObj = await groups.load(siteGroups)
     // ignore wiki dirs (coming from publishtools now)
     dirs = dirs.filter((item) => {if(!item.includes(".") && !item.startsWith("wiki")){return item}}).sort()
 
@@ -89,57 +89,57 @@ async function process(drive, dir){
         
         var dir = path.join(p, dirs[i])
         
-        var siteinfo = sitesConfig[dirs[i]]
-        var isWebSite = siteinfo.cat == 2
+        var siteInfo = sitesConfig[dirs[i]]
+        var isWebSite = siteInfo.cat == "web" || siteInfo.cat == 2
 
         var item =  isWebSite? "websites" : "wikis"
 
-        var alias = siteinfo.prefix
+        var alias = siteInfo.prefix
         
         if (alias in info[item]){
             console.log(chalk.red(`    ✓ (Drive (${drive.name}) Ignoring path: ${dir} duplicated alias`))
             continue
         }
-        var acls = await groupObj.parseAcl(siteinfo.acl)
+        var acls = await groupObj.parseAcl(siteInfo.acl)
         var val = {
             "drive": drive,
             "dir": dir,
-            "repo": siteinfo.repo,
+            "repo": siteInfo.repo,
             "alias": alias,
             "isWebSite": isWebSite,
             "acls": acls,
-            "domains": siteinfo.domains,
+            "domains": siteInfo.domains,
             "subPath": false
         }
         info[item][alias] = val
 
-        for(var k=0; k < siteinfo.domains.length; k++){
-            var domain = siteinfo.domains[k]
+        for(var k=0; k < siteInfo.domains.length; k++){
+            var domain = siteInfo.domains[k]
             domains[domain] = val
         }
     }
     // process wikis
     for(var wiki in sitesConfig){
-        var siteinfo = sitesConfig[wiki]
-        if(siteinfo.cat == 0){
-            var dir = path.join(p,  `wiki_${siteinfo.name}`)
-            var alias = siteinfo.name
+        var siteInfo = sitesConfig[wiki]
+        if(siteInfo.cat == "wiki" || siteInfo.cat == 0){
+            var dir = path.join(p,  `wiki_${siteInfo.name}`)
+            var alias = siteInfo.name
 
-            var acls = await groupObj.parseAcl(siteinfo.acl)
+            var acls = await groupObj.parseAcl(siteInfo.acl)
             var val = {
                 "drive": drive,
                 "dir": dir,
-                "repo": siteinfo.repo,
-                "alias": siteinfo.name,
+                "repo": siteInfo.repo,
+                "alias": siteInfo.name,
                 "isWebSite": false,
                 "acls": acls,
-                "domains": siteinfo.domains,
+                "domains": siteInfo.domains,
                 "subPath": false
             }
             info["wikis"][alias] = val
 
-            for(var k=0; k < siteinfo.domains.length; k++){
-                var domain = siteinfo.domains[k]
+            for(var k=0; k < siteInfo.domains.length; k++){
+                var domain = siteInfo.domains[k]
                 domains[domain] = val
         }
         }

@@ -4,7 +4,7 @@ tasks:
     - name: WIKI
       command: |
         echo "----------- 1.Install crystaltools -----------"
-        curl https://raw.githubusercontent.com/crystaluniverse/crystaltools/development/install.sh > /tmp/install.sh
+        curl https://raw.githubusercontent.com/freeflowuniverse/crystaltools/development/install.sh > /tmp/install.sh
         bash /tmp/install.sh
         source /workspace/env.sh
         echo "----------- 2.Install Node -----------"

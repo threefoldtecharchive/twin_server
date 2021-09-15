@@ -118,18 +118,33 @@ app.use(function (req, res, next) {
         return
     }
 
-    if (req.url.startsWith('/logout')) {
+    if (req.url.startsWith('/logout') || req.url == "/update") {
         next()
         return
     }
-    
 
 
     var info = null
+    let theDefault = false
+    for (let p in config.info.websites){
+        theDefault = config.info.websites[p]
+        break
+    }
+    // sentined check for wikis
+    if (!theDefault){
+        for (let p in config.info.wikis){
+            theDefault = config.info.wikis[p]
+            break
+        }   
+    }
+    req.defaultInfo = theDefault
     if (host == 'localhost' || host.endsWith('gitpod.io')) {
-        info = config.info.websites['aydo']
+        // get the first website that exists?
+        req.isLocal = true
+        info = config.info.websites['aydo'] || req.defaultInfo
     } else {
         info = config.info.domains[host]
+        console.info("Info from domain")
         if (!info) {
             return res.status(404).render('sites/404.mustache')
         }
@@ -149,7 +164,8 @@ app.use(function (req, res, next) {
         alias = splitted[0]
 
         if (host == 'localhost' || host.endsWith('gitpod.io')) {
-            info = config.info.websites['aydo']
+            req.isLocal = true
+            info = config.info.websites['aydo'] || req.defaultInfo
         } else {
             info = config.info.domains[host]
         }
@@ -180,6 +196,7 @@ app.use(function (req, res, next) {
 
     } else if (req.url != '/') {
         var found = false
+        console.log(req.url)
         for (var alias in config.info.websites) {
             if (req.url == `/${alias}` || req.url.startsWith(`/${alias}/`)) {
                 info = config.info.websites[alias]
@@ -203,25 +220,34 @@ app.use(function (req, res, next) {
 
         // threefold.io/blog   it is not website that is pathprefixed
         if (!found) {
-            info = Object.assign({}, info)
+            let allObjects = Object.assign({}, config.info.websites, config.info.wikis)
+            for (let w in allObjects) {
+                if (w && w.domains && w.domains.includes(host)){
+                    found = true
+                    info = w
+                }
+            }
+            // info = req.defaultInfo
+            // info = Object.assign({}, info)
             info.subPath = true
         }
     }
-
     if (!info) {
         return res.status(404).render('sites/404.mustache')
     }
+    // console.log(info)
     req.info = info
     req.info.host = host
     req.info.port = port
     req.info.secure = req.secure
     req.info.url = req.url
+    // req.info.acls = {"secrets": {}, "users": {}}
     next()
     return
 })
 
 app.use((req, res, next) => {
-    if (req.url.startsWith('/threebot') || req.url.startsWith('/logout')) {
+    if (req.url.startsWith('/threebot') || req.url.startsWith('/logout') || req.url == "/update") {
         next()
         return
     }
@@ -229,18 +255,17 @@ app.use((req, res, next) => {
 
     var requirePassword = false
     var threebotConnect = false
-
     if (!info.acls) {
         return res.status(404).render('sites/404.mustache')
     }
 
-    if (Object.keys(info.acls.secrets).length !== 0) {
+    if (info.acls.secrets && (Object.keys(info.acls.secrets).length !== 0) ) {
         requirePassword = true
         req.session.requirePassword = true
         req.session.save()
     }
 
-    if (Object.keys(info.acls.users).length !== 0) {
+    if (info.acls.users &&  (Object.keys(info.acls.users).length !== 0)) {
         threebotConnect = true
         req.session.threebotConnect = true
 

@@ -1,13 +1,18 @@
+const chalk = require('chalk');
 var express = require('express');
 var router = express.Router();
 const asyncHandler = require('express-async-handler')
 const config = require('../../../config')
+const server = require('../../../server')
 
 const logger = require('../../../logger')
 const path = require('path')
 var axios  = require('axios')
+var fs = require('fs');
+const { spawn } = require("child_process");
 
 async function getContent(filepath, httppath, encoding, info){
+    console.log(`+++getting content for ${filepath} ${httppath}`)
     var content = ""
     if (!process.env.WIKI_FS){
         
@@ -22,7 +27,7 @@ async function getContent(filepath, httppath, encoding, info){
                 content = await(rewriteRoles(content, info))
         }).catch(error => {
             if(error.response){
-                throw new Error("not ound")
+                throw new Error("not found")
             }
         });
         return content
@@ -197,6 +202,7 @@ async function handleWebsiteFile(req, res, info){
 async function handleWikiFile(req, res, info){
     var filename = req.url.replace(`/info`, "").replace(`/${info.alias}/`, "").toLowerCase()
     var wikiname = info.dir.substring(1)
+    console.log(`wikiname ${wikiname} file is ${filename}`)
 
     if (filename.startsWith('/')){
         filename = filename.substring(1)
@@ -210,6 +216,13 @@ async function handleWikiFile(req, res, info){
  
     var encoding = 'utf-8'  
     
+    if (filename.includes("_sidebar.md")){
+        console.log(filename)
+        old = filename
+        filename = filename .replace('/_', '_').replace('/', '_')
+        console.log(`Change from ${old} to ${filename}`)
+    }
+
     if (filename == "_sidebar.md"){
         filename = "sidebar.md"
     }
@@ -285,13 +298,17 @@ async function handleWikiFile(req, res, info){
         }
     }
     if(content){
+        console.log("got content")
         if (encoding == 'binary'){
             content = Buffer.from(content, 'binary')
         }
         
         return res.send(content)
+    }else{
+        console.log("no content")
+        return res.status(404).render('sites/404.mustache')
+
     }
-    return res.status(404).render('sites/404.mustache')
 }
 
 router.get('/login', asyncHandler(async (req, res) =>  {
@@ -489,12 +506,13 @@ router.get('/:path', asyncHandler(async (req, res) =>  {
 }))
 
 router.get('/info/:wiki', asyncHandler(async (req, res) =>  {
-    var name = req.params.wiki.toLowerCase()
+    var name = req.params.wiki.toLowerCase() 
     var filepath = ""
     contenttype = 'utf8'
     var dir = req.info.dir
     var driveObj = req.info.drive
-    if (name.endsWith("js") || name.endsWith("css")){   
+    console.log("filepath: " + filepath + ", name: " + name)
+    if (name.endsWith("js") || name.endsWith("css") || name.endsWith("ico")){   
         if (name.endsWith('js'))
             res.type("text/javascript")
         else if  (name.endsWith('css'))
@@ -619,4 +637,216 @@ router.get('/:website/*', asyncHandler(async (req, res) => {
     }
 }))
 
+/* No Need for adding new config for now
+router.post('/wikis', asyncHandler(async (req, res) => {
+    data = req.body
+    console.log("WIKI POST DATA::")
+    console.log(data)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
+    }
+    fs.writeFileSync(`${tmpDir}/site_wiki_tmp.json`, JSON.stringify(data));
+    var addWiki = spawn(`
+    . /workspace/env.sh;
+    cd /tmp/publishtools;
+    echo "### Publishtools install ###";
+    publishtools install;
+    echo "### Publishtools flatten ###";
+    publishtools flatten;` , {shell: "/bin/bash"});
+
+    addWiki.stdout.setEncoding('utf8');
+    addWiki.stdout.on('data', function (data) {
+        console.log(`- stdout: add new wiki: ${data}`)
+    });
+
+    addWiki.stderr.on('data', function (data) {
+        console.log(`- stderr: add new wiki: ${data}`)
+    });
+
+    addWiki.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_wiki_tmp.json`)
+        if (code == 0) {
+            res.send('{"success": true}')
+            console.log(chalk.green('✓ Done adding wiki'))
+        }
+        console.log("Reload Server Config")
+        server.init();
+        console.log(`process exit code ${code}`);
+    });
+    
+}))
+
+router.post('/sites', asyncHandler(async (req, res) => {
+    data = req.body
+    console.log("SITE POST DATA::")
+    console.log(data)
+    tmpDir = '/tmp/publishtools'
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, { recursive: true });
+    }
+    fs.writeFileSync(`${tmpDir}/site_tmp.json`, JSON.stringify(data, null, 2));
+    var addSite = spawn(`
+    . /workspace/env.sh;
+    cd /tmp/publishtools;
+    echo "### Publishtools install ###";
+    publishtools install;
+    echo "### Publishtools build ###";
+    echo "Website building, It may take a time ......";
+    publishtools build;` , {shell: "/bin/bash"});
+
+    addSite.stdout.setEncoding('utf8');
+    addSite.stdout.on('data', function (data) {
+        console.log(`- stdout: add new site: ${data}`)
+    });
+
+    addSite.stderr.on('data', function (data) {
+        console.log(`- stderr: add new site: ${data}`)
+    });
+
+    addSite.on('close', function (code) {
+        // Delete tmp config file
+        fs.unlinkSync(`${tmpDir}/site_tmp.json`)
+        if (code == 0){
+            res.send('{"success": true}')
+            console.log(chalk.green('✓ Done adding site'))
+        }
+        console.log("Reload Server Config")
+        server.init();
+        console.log(`process exit code ${code}`);
+    });
+}));
+*/
+router.post('/update', asyncHandler(async (req, res) => {
+    data = req.body;
+    console.log(data);
+    lastErrorMsg = ""
+    update_date = new Date()
+    update_date_1 = `${update_date.getUTCFullYear()}_${update_date.getUTCMonth()+1}_${update_date.getUTCDate()}`
+    update_date_2 = `${update_date.getUTCHours()}_${update_date.getUTCMinutes()}_${update_date.getUTCSeconds()}`
+    env_file = `${config.publishtools.root}env.sh`
+    tmpDir = `/tmp/publishtools/${update_date_1}/${update_date_2}/`
+    tmpStdOut = `${tmpDir}stdout`
+    tmpStdErr = `${tmpDir}stderr`
+    if (!fs.existsSync(tmpDir)){
+        fs.mkdirSync(tmpDir, {recursive: true})
+        fs.writeFileSync(tmpStdOut, "")
+        fs.writeFileSync(tmpStdErr, "")
+    }
+    
+    var update = spawn('echo', ["Updating ...."])
+    // console.log(chalk.yellow('- Updating ....'))
+    config.updateSitesConfig(config)
+
+    // Check if request data is empty
+    if (Object.keys(data).length == 0){
+        console.log(chalk.red(`- error: Missing data in the request`));
+        res.send({"status": false, "msg": "Missing data in the request"});
+        return res.status(400);
+    }
+
+    for (dir in data){
+        dirPath = `${config.publishtools.sitesConfigPath}/${dir}`
+        if (fs.existsSync(dirPath)){
+            elements = data[dir]
+            // Check if elements is empty, install, flatten and build for all files in dir
+            if (elements.length == 0){
+                console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
+                update = spawn(`
+                . ${env_file};
+                cd ${dirPath};
+                echo "### Publishtools install ###";
+                publishtools install;
+                echo "### Publishtools flatten ###";
+                publishtools flatten;
+                echo "### Publishtools build ###";
+                echo "Website building, It may take a time ......";
+                publishtools build;` , {shell: "/bin/bash"})
+            }else{
+                // List all files in this dir, Sort them to make wikis first
+                elements.sort((element1, element2) => {
+                    if (element1.includes("_wiki_")){
+                        return -1
+                    }else{
+                        return 1
+                    }
+                })
+                listDir = fs.readdirSync(dirPath)
+                for (element of elements){
+                    // Check if the element is in this dir
+                    if (listDir.includes(element)){
+                        console.log(chalk.yellow(`Updating ${dirPath}/${element}`));
+                        // Get config name
+                        f = fs.readFileSync(`${dirPath}/${element}`);
+                        elementJson = JSON.parse(f);
+                        fs.copyFileSync(`${dirPath}/${element}`, `${tmpDir}/${element}`)
+                        /* ------ WILL BE USED IF --repo OPTION RETURNED ------
+                        if (element.includes("_wiki_")){
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools flatten ###";
+                            publishtools flatten --repo ${elementJson.name};
+                            `
+                        }else{
+                            cmd = `
+                            . /workspace/env.sh;
+                            cd ${dirPath};
+                            echo "### Publishtools install ###";
+                            publishtools install;
+                            echo "### Publishtools build ###";
+                            publishtools build --repo ${elementJson.name};
+                            `
+                        }
+                        update = spawn(cmd, {shell: "/bin/bash"})
+                        res.send({"status": true});
+                        ---------------------------------------------------- */
+                    }else{
+                        console.log(chalk.red(`Wrong File, ${dirPath}/${element} not exist`))
+                    }
+                }
+                console.log(chalk.yellow(`- Updating dir: ${dirPath}`))
+                update = spawn(`
+                . ${env_file};
+                cd ${tmpDir};
+                echo "### Publishtools install ###";
+                publishtools install;
+                echo "### Publishtools flatten ###";
+                publishtools flatten;
+                echo "### Publishtools build ###";
+                echo "Website building, It may take a time ......";
+                publishtools build`, {shell: "/bin/bash"})
+            }
+        }else{
+            console.log(chalk.red(`Wrong directory, ${dirPath} not exist`))
+        }
+    }
+
+    update.stdout.setEncoding('utf8');
+    update.stdout.on('data', function (data) {
+        console.log(`>> ${data}`)
+        fs.appendFileSync(tmpStdOut, data)
+    });
+
+    update.stderr.on('data', function (data) {
+        lastErrorMsg = data
+        console.log(chalk.red(`>> error: ${data}`))
+        fs.appendFileSync(tmpStdErr, data)
+    });
+
+    update.on('close', function (code) {
+        if (code == 0) {
+            res.send({"success": true, "msg":"Updates Done!"})
+        }else{
+            res.send({"success": false, "msg":`Updates failed with error ${lastErrorMsg}`})
+        }
+        console.log("Reload Server Config")
+        server.init();
+        console.log(chalk.green(`Updates Done!`));
+        console.log(`process exit code ${code}`);
+    });
+}));
 module.exports = router

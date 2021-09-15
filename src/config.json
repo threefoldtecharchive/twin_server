@@ -20,7 +20,8 @@
     },
 
     "publishtools" : {
-        "root" : "~/.publisher/publish/"
+        "root" : "/workspace/publisher/",
+        "sitesConfig": "https://github.com/threefoldfoundation/www_config_private/tree/main"
     },
 
     "threebot": {
@@ -28,8 +29,8 @@
     },
 
     "nodejs":{
-        "production": false,
-        "ssl": false
+        "production": true,
+        "ssl": true
     },
 
     "info": {}

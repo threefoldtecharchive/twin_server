@@ -4,7 +4,7 @@
     "debug": false,
     "redis": false,
     "port": 9998,
-    "multibranch":true,
+    "multibranch":false,
     "paths": {
         "base": "",
         "code": "",

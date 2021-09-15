@@ -3,12 +3,20 @@ image:
 tasks:
     - name: WIKI
       command: |
+        echo "----------- 1.Install crystaltools -----------"
         curl https://raw.githubusercontent.com/crystaluniverse/crystaltools/development/install.sh > /tmp/install.sh
         bash /tmp/install.sh
         source /workspace/env.sh
+        echo "----------- 2.Install Node -----------"
         node_install
+        echo "----------- 3.NPM Install gridsome -----------"
         sudo npm install --global @gridsome/cli
-        bash wiki_run_node.sh
+        echo "----------- 4.Copy configuration files in publish/config -----------"
+        mkdir -p /workspace/publisher/config
+        mv /workspace/twin_server/wiki_config/site_twin_aydo.json /workspace/publisher/config
+        cp /workspace/twin_server/wiki_config/* /workspace/publisher/config
+        echo "----------- 5.Run wiki_flatten script -----------"
+        bash wiki_flatten.sh
 ports:
   - port: 9998
     onOpen: open-browser

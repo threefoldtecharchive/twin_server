@@ -36,7 +36,7 @@ COPY digitaltwin/sites.json /tmp/sites.json
 WORKDIR /tmp
 RUN sed -i "s/replace_www_digitaltwin_branch/${WWW_DIGITALTWIN_BRANCH}/gI" ./sites.json
 
-RUN curl -L https://github.com/crystaluniverse/publishtools/releases/download/first/publishtools_linux > /usr/local/bin/publishtools
+RUN curl -L https://github.com/crystaluniverse/crystaltools/releases/download/first/publishtools_linux > /usr/local/bin/publishtools
 RUN chmod u+x /usr/local/bin/publishtools
 
 ##IDK why but it works

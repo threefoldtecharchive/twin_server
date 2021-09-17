@@ -4,6 +4,7 @@ var router = express.Router();
 const asyncHandler = require('express-async-handler')
 const config = require('../../../config')
 const server = require('../../../server')
+const utils = require('../../../utils')
 
 const logger = require('../../../logger')
 const path = require('path')
@@ -725,7 +726,6 @@ router.post('/update', asyncHandler(async (req, res) => {
     update_date = new Date()
     update_date_1 = `${update_date.getUTCFullYear()}_${update_date.getUTCMonth()+1}_${update_date.getUTCDate()}`
     update_date_2 = `${update_date.getUTCHours()}_${update_date.getUTCMinutes()}_${update_date.getUTCSeconds()}`
-    env_file = `${config.publishtools.root}env.sh`
     tmpDir = `/tmp/publishtools/${update_date_1}/${update_date_2}/`
     tmpStdOut = `${tmpDir}stdout`
     tmpStdErr = `${tmpDir}stderr`
@@ -735,6 +735,14 @@ router.post('/update', asyncHandler(async (req, res) => {
         fs.writeFileSync(tmpStdErr, "")
     }
     
+    // Check for env file location
+    env_file = ""
+    if (fs.existsSync('/workspace')){
+        env_file = "/workspace/env.sh"
+    }else {
+       env_file = await utils.resolvePath("~/env.sh")
+    }
+
     var update = spawn('echo', ["Updating ...."])
     // console.log(chalk.yellow('- Updating ....'))
     config.updateSitesConfig(config)

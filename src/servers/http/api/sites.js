@@ -52,7 +52,7 @@ async function getContent(filepath, httppath, encoding, info){
     
 
 async function rewriteRoles(content, info){
-    content = content.replace("/#/", "#/")
+    content = content.replace(new RegExp(`/#/`, "g"), "#/")
     var scheme = info.secure ? 'https' : 'http'
 
     host = `${scheme}://${info.host}`
